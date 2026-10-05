@@ -132,6 +132,36 @@ h2.sec{font-size:17px;font-stretch:115%;margin:24px 0 10px}
 #fBody{display:grid;grid-template-columns:1fr 1fr;column-gap:10px}
 #fBody>div{grid-column:1/-1;min-width:0}#fBody>div.half{grid-column:auto}
 .lead .linkline{margin-top:4px}
+/* outreach */
+.tab{font-stretch:88%}
+.ohead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:0 0 6px}
+.ohead b{font-size:15px}.ohead span{color:var(--muted);font-size:13px}
+.prog{height:8px;background:#E4E8EE;border-radius:4px;overflow:hidden;margin-bottom:16px}
+.prog i{display:block;height:100%;background:var(--won);transition:width .3s}
+.ocard{background:var(--card);border:1px solid #B9C1CC;border-radius:12px;padding:16px;margin-bottom:8px}
+.otop{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.otag{font-size:12.5px;font-weight:600;padding:3px 9px;border-radius:20px;background:#E4EDF8;color:#2F5F9A}
+.oname{font-stretch:118%;font-weight:800;font-size:24px;line-height:1.1;margin:10px 0 4px;letter-spacing:-.01em}
+.why{font-size:14px;background:var(--bg);border-radius:8px;padding:8px 10px;margin:12px 0 0}
+.msg{margin:12px 0 0;border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.msg summary{cursor:pointer;font-weight:600;font-size:14px}
+.msg .subj{font-weight:600;margin:8px 0 0;font-size:14px}
+.msg .body{white-space:pre-wrap;margin:6px 0 2px;font-size:14px}
+.ogo{display:flex;flex-direction:column;gap:8px;margin:14px 0 0}
+.ogo .btn{width:100%;text-align:center;text-decoration:none;display:block}
+.ogo .hint{margin:0}
+.outs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.outs .btn{padding:11px 6px;font-size:14px}
+.toast{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--ink);color:#fff;border-radius:10px;padding:10px 12px;font-size:13.5px;margin-bottom:14px}
+.toast .link{color:#fff;font-weight:650;flex:none}
+.cells{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cell{text-align:left;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.cell .nm{font-weight:650;font-size:14.5px;line-height:1.2}.cell .rg{font-size:13.5px}
+.cell .st{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.cell .dot{width:8px;height:8px}
+.cell.add{border-style:dashed;color:var(--muted);align-items:center;justify-content:center;font-weight:600;min-height:84px}
+.obanner{display:flex;justify-content:space-between;align-items:center;gap:10px;border-left-color:var(--won)}
+.obanner .btn{flex:none}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -140,6 +170,7 @@ h2.sec{font-size:17px;font-stretch:115%;margin:24px 0 10px}
   <h1>Clients &amp; pipeline</h1>
   <div class="tabs" role="tablist">
     <button class="tab on" role="tab" data-tab="today" aria-selected="true">Today</button>
+    <button class="tab" role="tab" data-tab="out" aria-selected="false">Outreach</button>
     <button class="tab" role="tab" data-tab="pipe" aria-selected="false">Pipeline</button>
     <button class="tab" role="tab" data-tab="clients" aria-selected="false">Clients</button>
     <button class="tab" role="tab" data-tab="stats" aria-selected="false">Analytics</button>
@@ -147,6 +178,7 @@ h2.sec{font-size:17px;font-stretch:115%;margin:24px 0 10px}
   <p class="savenote" id="saveNote" role="status"></p>
 
   <section id="todayView"></section>
+  <section id="outView" hidden></section>
 
   <section id="pipeView" hidden>
     <p class="sub">Tap a stage to filter. Use the arrows to move a lead up or down.</p>
@@ -199,6 +231,7 @@ h2.sec{font-size:17px;font-stretch:115%;margin:24px 0 10px}
   <div id="fBody"></div>
   <div class="actions">
     <button class="btn" id="fSave">Save</button>
+    <button class="btn ghost" id="fAgain" hidden></button>
     <span class="spacer"></span>
     <button class="btn danger" id="fDel">Delete</button>
     <button class="btn ghost" id="fCancel">Cancel</button>
@@ -214,7 +247,7 @@ const STAGES=[
 const LOST={k:'lost',n:'Lost',d:'Went dark or said no'};
 const MARKETS=['Education','Healthcare','Finance','Fashion'];
 const STATUSES=[{k:'active',n:'Active client'},{k:'prospect',n:'Prospect'},{k:'paused',n:'Paused'},{k:'former',n:'Former client'}];
-const ACT_TYPES=['Call','Meeting','Email','Note'];
+const ACT_TYPES=['Call','Meeting','Email','LinkedIn','Note'];
 const QUIET_DAYS=30;
 const $=s=>document.querySelector(s);
 const idx=k=>STAGES.findIndex(s=>s.k===k);
@@ -335,14 +368,14 @@ function markWon(l){ const a=acctOf(l); if(a&&l.stage==='won'&&a.status==='prosp
 
 function track(l){ l.hist=l.hist||[]; const last=l.hist[l.hist.length-1]; if(!last||last.s!==l.stage) l.hist.push({s:l.stage,d:today()}); }
 function wonDate(l){ const h=(l.hist||[]).filter(x=>x.s==='won'); return h.length?h[h.length-1].d:(l.last||l.created||today()); }
-function staleDays(l){ const s=STAGES[idx(l.stage)]; if(!s||!s.stale) return 0; const d=days(l.last); return d!==null&&d>s.stale?d:0; }
+function staleDays(l){ if(l.seq==='active'||l.seq==='finished') return 0; const s=STAGES[idx(l.stage)]; if(!s||!s.stale) return 0; const d=days(l.last); return d!==null&&d>s.stale?d:0; }
 const openLeads=()=>leads.filter(isOpen);
 const weighted=a=>a.reduce((x,l)=>x+(+l.value||0)*STAGES[idx(l.stage)].p,0);
 
 // Tabs and routing
-const VIEWS={today:'#todayView',pipe:'#pipeView',clients:'#clientsView',stats:'#statsView'};
+const VIEWS={today:'#todayView',out:'#outView',pipe:'#pipeView',clients:'#clientsView',stats:'#statsView'};
 function setTab(t){
-  tab=t; openAcct=null;
+  tab=t; openAcct=null; openCell=null; undo=null;
   document.querySelectorAll('.tab').forEach(b=>{const on=b.dataset.tab===t; b.classList.toggle('on',on); b.setAttribute('aria-selected',on);});
   render(); window.scrollTo(0,0);
 }
@@ -358,13 +391,13 @@ function render(){
   const inAcct=tab==='clients'&&!!openAcct;
   Object.entries(VIEWS).forEach(([k,s])=>{ $(s).hidden=!(k===tab&&!inAcct); });
   $('#acctView').hidden=!inAcct;
-  const fab=inAcct?'':{today:'Add task',pipe:'Add lead',clients:'Add client',stats:''}[tab];
+  const fab=inAcct?'':{today:'Add task',out:'Add prospect',pipe:'Add lead',clients:'Add client',stats:''}[tab];
   $('#addBtn').hidden=!fab; $('#addBtn').textContent=fab;
   refreshLists();
   if(inAcct) renderAcct();
-  else ({today:renderToday,pipe:renderPipeline,clients:renderClients,stats:renderStats})[tab]();
+  else ({today:renderToday,out:renderOutreach,pipe:renderPipeline,clients:renderClients,stats:renderStats})[tab]();
 }
-$('#addBtn').onclick=()=>{ if(tab==='today') editTask(null); else if(tab==='pipe') openEditor(null); else if(tab==='clients') editAcct(null); };
+$('#addBtn').onclick=()=>{ if(tab==='today') editTask(null); else if(tab==='out') addProspect(openCell); else if(tab==='pipe') openEditor(null); else if(tab==='clients') editAcct(null); };
 
 // Shared rows
 function section(parent,title,rows,empty,hint){
@@ -426,10 +459,13 @@ function renderToday(){
   const stale=openLeads().filter(staleDays).sort((a,b)=>staleDays(b)-staleDays(a));
   const quiet=accounts.filter(a=>a.status==='active').map(a=>({a,d:lastTouch(a)}))
     .filter(x=>!x.d||days(x.d)>QUIET_DAYS).sort((x,y)=>(x.d||'').localeCompare(y.d||''));
-  v.innerHTML=`<div class="stats">
+  const oq=queue().length, od=O().olog[t0]||0;
+  const ob=oq||od?`<div class="mkt obanner"><span><b>Outreach:</b> ${oq?`${oq} ${oq===1?'touch':'touches'} due today`:`${od} done today`}</span>${oq?'<button class="btn sm" id="goOut">Start</button>':''}</div>`:'';
+  v.innerHTML=ob+`<div class="stats">
     <div class="stat ${overdue.length?'alert':''}"><b>${overdue.length}</b><span>Overdue tasks</span></div>
     <div class="stat"><b>${dueToday.length}</b><span>Due today</span></div>
     <div class="stat ${stale.length?'alert':''}"><b>${stale.length}</b><span>Leads to follow up</span></div></div>`;
+  const gb=$('#goOut'); if(gb) gb.onclick=()=>setTab('out');
   if(!tasks.length&&!leads.length&&!accounts.length){
     v.innerHTML+=`<div class="empty"><p>Nothing here yet. Add a task, a lead, or a client, or load example data to see how it all fits together.</p><button class="btn ghost" id="sample2">Load example data</button></div>`;
     $('#sample2').onclick=loadSamples; return;
@@ -547,8 +583,10 @@ let fcfg=null;
 function form(cfg){
   fcfg=cfg; $('#fTitle').textContent=cfg.title; $('#fSave').textContent=cfg.saveLabel||'Save';
   $('#fDel').hidden=!cfg.onDelete;
+  $('#fAgain').hidden=!cfg.onAgain; $('#fAgain').textContent=cfg.againLabel||'Save and add another';
   $('#fBody').innerHTML=cfg.fields.map(f=>{
     const id='ff-'+f.id, v=f.value??'';
+    if(f.type==='note') return `<div><p class="hint" style="margin:8px 0 0">${esc(f.label)}</p></div>`;
     let c;
     if(f.type==='select') c=`<select id="${id}">${f.options.map(o=>{const [val,lab]=Array.isArray(o)?o:[o,o]; return `<option value="${esc(val)}"${String(val)===String(v)?' selected':''}>${esc(lab)}</option>`;}).join('')}</select>`;
     else if(f.type==='textarea') c=`<textarea id="${id}" rows="${f.rows||3}" placeholder="${esc(f.placeholder||'')}">${esc(v)}</textarea>`;
@@ -563,6 +601,7 @@ function need(id,msg){ const el=$('#ff-'+id); if(el.value.trim()) return true; e
 $('#fSave').onclick=()=>{ if(fcfg.onSave()!==false){ $('#fdlg').close(); save(); render(); } };
 $('#fDel').onclick=()=>{ if(fcfg.onDelete&&fcfg.onDelete()!==false){ $('#fdlg').close(); save(); render(); } };
 $('#fCancel').onclick=()=>$('#fdlg').close();
+$('#fAgain').onclick=()=>{ if(fcfg.onSave()!==false){ const nx=fcfg.onAgain; $('#fdlg').close(); save(); render(); nx(); } };
 
 function editAcct(a){
   form({title:a?'Edit client':'Add client',saveLabel:a?'Save client':'Add client',fields:[
@@ -629,6 +668,274 @@ function editTask(t,acctId){
       if(t) Object.assign(t,d); else tasks.push({id:uid(),done:false,created:today(),...d});
     },
     onDelete:t?()=>{ tasks=tasks.filter(z=>z!==t); }:null});
+}
+
+// Outreach: markets (industry + city), a daily one-at-a-time queue, and a 5-touch sequence
+const CAD=[
+ {ch:'Email',gap:0,label:'Intro email'},
+ {ch:'LinkedIn',gap:2,label:'LinkedIn connect'},
+ {ch:'Email',gap:3,label:'Follow-up email'},
+ {ch:'Call',gap:4,label:'Phone call'},
+ {ch:'Email',gap:5,label:'Last email'}];
+const DEF_T=[
+ {s:'Quick idea for {company}',b:`Hi {first},\n\nI run a marketing agency here in Central Virginia and have been looking at {market} businesses around {city}. {proof}\n\nI have a couple of specific ideas for {company} that could bring in more customers. Worth a 15-minute call next week?\n\n{me}`},
+ {b:`Hi {first}, I work with {market} businesses around {city} on their marketing and would be glad to connect.`},
+ {s:'Re: Quick idea for {company}',b:`Hi {first},\n\nI took a quick look at how people find {company} online and spotted a couple of quick wins, mostly around turning visitors into booked customers. Happy to walk you through them in 15 minutes, no strings attached.\n\n{me}`},
+ {b:`Hi {first}, this is {me}. I sent you a couple of notes about {company}'s marketing. I have two quick ideas for bringing in more customers around {city}. Do you have 15 minutes this week?\n\nVoicemail: Hi {first}, it's {me}, calling about a couple of marketing ideas for {company}. I'll send a quick email so you have my info.`},
+ {s:'Should I close the loop?',b:`Hi {first},\n\nI haven't heard back, so I'll assume the timing isn't right and stop reaching out. If bringing in more customers becomes a priority for {company}, I'm one email away.\n\n{me}`}];
+const DEF_PROOF={healthcare:'We work with healthcare practices across Virginia on patient growth.',finance:'We work with financial firms across Virginia, so we know the compliance side as well as the marketing side.',fashion:'We work with fashion and retail brands on social, content, and launches.',education:'We work with schools across Virginia on enrollment marketing.'};
+const GENERIC_PROOF='We help local businesses bring in more customers.';
+const CELL_ST=[{k:'active',n:'Active',c:'var(--won)'},{k:'next',n:'Next up',c:'var(--warm)'},{k:'paused',n:'Paused',c:'var(--lost)'}];
+let openCell=null, undo=null, extra=0, lastCell=null;
+function O(){ settings.cells=settings.cells||[]; settings.olog=settings.olog||{}; settings.tpl=settings.tpl||[]; settings.proofs=settings.proofs||{}; return settings; }
+const low=s=>(s||'').trim().toLowerCase();
+const cellKey=(m,r)=>low(m)+'|'+low(r);
+function cellOfLead(l){ const a=acctOf(l); if(!a) return null; return O().cells.find(c=>cellKey(c.market,c.region)===cellKey(a.market,a.region))||null; }
+const leadsInCell=c=>leads.filter(l=>{ const a=acctOf(l); return l.seq&&a&&cellKey(a.market,a.region)===cellKey(c.market,c.region); });
+const isWeekend=d=>{ const x=new Date(d+'T12:00:00').getDay(); return x===0||x===6; };
+const shift=(d,n)=>iso(new Date(new Date(d+'T12:00:00').getTime()+n*864e5));
+function weekdayAfter(d,n){ let x=shift(d,Math.max(n,0)); while(isWeekend(x)) x=shift(x,1); return x; }
+function contactOf(l){ return contacts.find(c=>c.id===l.contactId)||contacts.find(c=>c.accountId===l.accountId&&c.name===l.name)||contacts.find(c=>c.accountId===l.accountId)||null; }
+function tpl(i){ const t=O().tpl[i]||{}; return {s:DEF_T[i].s==null?null:(t.s||DEF_T[i].s), b:t.b||DEF_T[i].b}; }
+function proofFor(m){ const p=O().proofs; const k=Object.keys(p).find(x=>low(x)===low(m)); return (k&&p[k])||DEF_PROOF[low(m)]||GENERIC_PROOF; }
+function fill(str,l){
+  const a=acctOf(l)||{}, c=contactOf(l);
+  const first=((c&&c.name)||'').trim().split(/\s+/)[0]||'there';
+  const map={first,company:a.name||l.company||'your business',city:a.region||'your area',market:low(a.market)||'local',proof:proofFor(a.market),me:O().signoff||'Sam'};
+  return (str||'').replace(/\{(\w+)\}/g,(m,k)=>k in map?map[k]:m);
+}
+function queue(){
+  const t0=today();
+  return leads.filter(l=>l.seq==='active'&&l.stage==='cold'&&l.nextTouch&&l.nextTouch<=t0&&cellOfLead(l)?.status!=='paused')
+    .sort((a,b)=>a.nextTouch.localeCompare(b.nextTouch)||(+b.score||0)-(+a.score||0)||(b.touch||0)-(a.touch||0));
+}
+function streak(){
+  const g=O().olog; let d=today(), s=0;
+  if(!g[d]) d=shift(d,-1);
+  for(let i=0;i<400;i++){ if(g[d]>0) s++; else if(!isWeekend(d)) break; d=shift(d,-1); }
+  return s;
+}
+function cellStats(c){
+  const ls=leadsInCell(c), contacted=ls.filter(l=>(l.touch||0)>0), rep=ls.filter(l=>l.seq==='replied');
+  return {ls,inSeq:ls.filter(l=>l.seq==='active'),contacted,rep,rate:contacted.length?rep.length/contacted.length:null,won:ls.filter(l=>l.stage==='won')};
+}
+function copyText(t,btn){
+  const ok=()=>{ if(btn){ const o=btn.textContent; btn.textContent='Copied'; setTimeout(()=>{btn.textContent=o;},1500); } };
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok).catch(()=>prompt('Copy this message:',t));
+  else prompt('Copy this message:',t);
+}
+
+function outcome(l,kind){
+  const t0=today(), n=l.touch||0, step=CAD[Math.min(n,CAD.length-1)], a=acctOf(l), nm=a?a.name:l.name;
+  undo={msg:'',snap:JSON.stringify({leads,acts,tasks,settings})};
+  if(kind==='skip'){ l.nextTouch=weekdayAfter(t0,1); undo.msg=`Moved ${nm} to ${fmtDate(l.nextTouch)}.`; }
+  else{
+    const g=O().olog; g[t0]=(g[t0]||0)+1;
+    Object.keys(g).forEach(k=>{ if(dd(k,t0)>90) delete g[k]; });
+    if(a) acts.push({id:uid(),accountId:a.id,leadId:l.id,type:kind==='notfit'?'Note':step.ch,date:t0,
+      note:kind==='done'?`Outreach touch ${n+1}: ${step.label}`:kind==='replied'?`Replied to outreach (touch ${n+1}: ${step.label})`:'Marked not a fit during outreach'});
+    l.last=t0;
+    if(kind==='done'){
+      l.touch=n+1;
+      if(l.touch>=CAD.length){ l.seq='finished'; l.nextTouch=''; undo.msg=`Sequence finished for ${nm}.`; }
+      else{ l.nextTouch=weekdayAfter(t0,CAD[l.touch].gap); undo.msg=`Next for ${nm}: ${CAD[l.touch].label.toLowerCase()}, ${fmtDate(l.nextTouch)}.`; }
+    }else if(kind==='replied'){
+      l.touch=n+1; l.seq='replied'; l.nextTouch=''; l.stage='warm'; l.max=Math.max(l.max??0,1); track(l);
+      tasks.push({id:uid(),accountId:a?a.id:'',title:`Reply to ${l.name}`,due:t0,done:false,created:t0});
+      undo.msg=`${nm} moved to Warm. A reply task is on your Today tab.`;
+    }else{
+      l.seq='stopped'; l.nextTouch=''; l.stage='lost'; l.reason='Not a fit'; track(l);
+      undo.msg=`${nm} marked not a fit.`;
+    }
+  }
+  save(); render(); window.scrollTo(0,0);
+}
+function doUndo(){
+  if(!undo) return; const d=JSON.parse(undo.snap);
+  leads=d.leads; acts=d.acts; tasks=d.tasks; settings=d.settings; undo=null; save(); render();
+}
+
+function outCard(l,nextL,parent){
+  const a=acctOf(l)||{name:l.company||l.name}, c=contactOf(l), n=l.touch||0, step=CAD[n], t=tpl(n);
+  const subj=t.s!=null?fill(t.s,l):'', body=fill(t.b,l), late=l.nextTouch<today();
+  const who=[c&&c.name&&c.name!==a.name?c.name:'',c&&c.role].filter(Boolean).map(esc).join(', ');
+  const where=[a.market,a.region].filter(Boolean).map(esc).join(' / ');
+  const first=c&&c.name?esc(c.name.trim().split(/\s+/)[0]):'them';
+  let primary='';
+  if(step.ch==='Email') primary=c&&c.email?`<a class="btn" href="mailto:${esc(c.email)}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}">Open email with message</a>`:`<p class="hint">No email on file. Copy the message and send it however you can reach ${first}.</p>`;
+  else if(step.ch==='LinkedIn') primary=`<button class="btn" id="oGo">Copy note and open LinkedIn</button>`;
+  else primary=c&&c.phone?`<a class="btn" href="tel:${esc(c.phone.replace(/[^\d+]/g,''))}">Call ${first}</a>`:`<p class="hint">No phone number on file. Find it on their website, or skip to tomorrow.</p>`;
+  const d=document.createElement('div');
+  d.innerHTML=`<div class="ocard">
+    <div class="otop"><span class="otag">Touch ${n+1} of ${CAD.length}: ${step.label}</span>${late?`<span class="due late">${dueText(l.nextTouch)}</span>`:''}</div>
+    <h2 class="oname">${esc(a.name)}</h2>
+    <p class="co" style="margin:0">${[who,where].filter(Boolean).join(' / ')}</p>
+    ${l.why?`<p class="why"><b>Why now:</b> ${esc(l.why)}</p>`:''}
+    <details class="msg"${step.ch==='Call'?' open':''}><summary>${step.ch==='Call'?'Call script':'Message'}</summary>${subj?`<p class="subj">${esc(subj)}</p>`:''}<p class="body">${esc(body)}</p></details>
+    ${n===2?'<p class="hint" style="margin:10px 0 0">Add one specific thing you noticed about their site before you send.</p>':''}
+    <div class="ogo">${primary}${step.ch!=='Call'?'<button class="btn ghost" id="oCopy">Copy message</button>':''}</div>
+    <div class="outs">
+      <button class="btn ghost" data-o="done">${step.ch==='Call'?'Called':'Sent'}</button>
+      <button class="btn ghost" data-o="replied">They replied</button>
+      <button class="btn ghost" data-o="skip">Skip to tomorrow</button>
+      <button class="btn ghost" data-o="notfit">Not a fit</button>
+    </div></div>
+    ${nextL?`<p class="hint" style="text-align:center">Next up: ${esc((acctOf(nextL)||{}).name||nextL.name)}, touch ${(nextL.touch||0)+1}</p>`:''}`;
+  parent.appendChild(d);
+  const go=d.querySelector('#oGo');
+  if(go) go.onclick=()=>{
+    copyText(body,go);
+    const url=l.li?(/^https?:\/\//i.test(l.li)?l.li:'https://'+l.li):'https://www.linkedin.com/search/results/people/?keywords='+encodeURIComponent([c&&c.name,a.name].filter(Boolean).join(' '));
+    window.open(url,'_blank','noopener');
+  };
+  const cp=d.querySelector('#oCopy'); if(cp) cp.onclick=()=>copyText(body,cp);
+  d.querySelectorAll('.outs [data-o]').forEach(b=>b.onclick=()=>outcome(l,b.dataset.o));
+}
+
+function cellCard(c){
+  const s=cellStats(c), st=CELL_ST.find(x=>x.k===c.status)||CELL_ST[0];
+  const b=document.createElement('button'); b.className='cell';
+  b.innerHTML=`<span class="nm">${esc(c.market)}</span><span class="rg">${esc(c.region)}</span>
+    <span class="st"><span class="dot" style="--c:${st.c}"></span>${st.n}</span>
+    <span class="st">${s.inSeq.length} in sequence${s.rate!=null?`, ${pct(s.rate)} replies`:''}</span>`;
+  b.onclick=()=>{ openCell=c.id; undo=null; render(); window.scrollTo(0,0); };
+  return b;
+}
+
+function renderOutreach(){
+  const v=$('#outView'); O();
+  if(openCell){ const c=settings.cells.find(x=>x.id===openCell); if(c) return renderCell(c,v); openCell=null; }
+  const t0=today(), q=queue(), done=settings.olog[t0]||0, goal=(+settings.cap||10)+extra;
+  const left=Math.min(q.length,Math.max(goal-done,0)), total=done+left, st=streak();
+  const hasAny=settings.cells.length||leads.some(l=>l.seq);
+  v.innerHTML=(undo&&undo.msg?`<div class="toast" role="status"><span>${esc(undo.msg)}</span><button class="link" id="undoBtn">Undo</button></div>`:'')
+    +(hasAny?`<div class="ohead"><b>${total?`${done} of ${total} done today`:'Nothing due today'}</b><span>${st?`${st}-day streak`:'No streak yet'}</span></div>
+    <div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="${total}" aria-valuenow="${done}"><i style="width:${total?Math.round(done/total*100):0}%"></i></div>`:'');
+  if(undo) $('#undoBtn').onclick=doUndo;
+  if(!hasAny){
+    v.innerHTML+=`<div class="empty"><p>Start with one market: one industry in one city, like Healthcare in Roanoke. Add prospects to it, and this tab hands you one to contact at a time, with the message already written.</p><button class="btn" id="firstCell">Add your first market</button></div>`;
+    $('#firstCell').onclick=()=>editCell(null); return;
+  }
+  if(left>0) outCard(q[0],q[1]&&left>1?q[1]:null,v);
+  else{
+    const e=document.createElement('div'); e.className='empty';
+    if(q.length){
+      e.innerHTML=`<p><b>Daily goal hit.</b> ${done} touches today. ${q.length} more ${q.length===1?'is':'are'} due if you want to keep going.</p><button class="btn ghost">Do ${Math.min(5,q.length)} more</button>`;
+      e.querySelector('button').onclick=()=>{ extra+=5; render(); };
+    }else e.innerHTML=done?`<p><b>All caught up.</b> Everything due today is done. Follow-ups are already scheduled.</p>`:`<p>Nothing due today. Add prospects to an active market and they'll show up here.</p>`;
+    v.appendChild(e);
+  }
+  const h=document.createElement('h2'); h.className='sec'; h.textContent='Markets'; v.appendChild(h);
+  const g=document.createElement('div'); g.className='cells';
+  const order=CELL_ST.map(x=>x.k);
+  settings.cells.slice().sort((a,b)=>order.indexOf(a.status)-order.indexOf(b.status)||a.market.localeCompare(b.market)).forEach(c=>g.appendChild(cellCard(c)));
+  const add=document.createElement('button'); add.className='cell add'; add.textContent='Add market'; add.onclick=()=>editCell(null); g.appendChild(add);
+  v.appendChild(g);
+  const m=document.createElement('p'); m.style.margin='14px 0 0';
+  m.innerHTML=`<button class="link" id="msgBtn">Edit messages and daily goal</button>`; v.appendChild(m);
+  $('#msgBtn').onclick=editMessages;
+}
+
+function renderCell(c,v){
+  const s=cellStats(c), st=CELL_ST.find(x=>x.k===c.status)||CELL_ST[0];
+  let tip='';
+  if(s.contacted.length&&s.contacted.length<20) tip=`Reply rate is based on ${s.contacted.length} contacted. Give it 20 or more before judging this market.`;
+  else if(s.contacted.length>=20&&s.rate<.03) tip='Under 3% replies. Try a stronger proof line or first email before dropping this market.';
+  else if(s.contacted.length>=20&&s.rate>.08) tip='Over 8% replies. This market is working, so add more prospects.';
+  v.innerHTML=`<button class="link back" id="cBack">‹ All markets</button>
+    <h2 class="aname">${esc(c.market)} in ${esc(c.region)}</h2>
+    <p class="co" style="margin:0;display:flex;align-items:center;gap:6px"><span class="dot" style="--c:${st.c}"></span>${st.n}${c.status==='paused'?', not in your daily queue':''}</p>
+    <div class="acts"><button class="btn" id="cAdd">Add prospect</button><button class="btn ghost" id="cEdit">Edit market</button></div>
+    <div class="stats"><div class="stat"><b>${s.inSeq.length}</b><span>In sequence</span></div><div class="stat"><b>${pct(s.rate)}</b><span>Reply rate</span></div><div class="stat"><b>${money(sum(s.won))}</b><span>Won</span></div></div>
+    <p class="mkt"><b>Proof line:</b> ${esc(proofFor(c.market))}</p>
+    ${tip?`<p class="hint">${tip}</p>`:''}
+    <div id="cBody"></div>`;
+  const b=$('#cBody');
+  const row=(l,line)=>{
+    const a=acctOf(l)||{name:l.name}, r=document.createElement('div'); r.className='row';
+    r.innerHTML=`<div class="main" tabindex="0" role="button"><div class="nm">${esc(a.name)}</div><div class="co">${l.name!==a.name?esc(l.name)+' / ':''}${line}</div></div>`;
+    bindOpen(r.querySelector('.main'),()=>openEditor(l)); return r;
+  };
+  const inSeq=s.inSeq.slice().sort((x,y)=>(x.nextTouch||'').localeCompare(y.nextTouch||''));
+  section(b,'In sequence',inSeq.map(l=>row(l,`Touch ${(l.touch||0)+1} of ${CAD.length}, ${dueText(l.nextTouch).toLowerCase()}`)),'No one in sequence yet. Tap Add prospect to start.');
+  if(s.rep.length) section(b,'Replied',s.rep.map(l=>row(l,'Replied / now '+((STAGES[idx(l.stage)]||LOST).n))),'');
+  const rest=s.ls.filter(l=>l.seq==='finished'||l.seq==='stopped');
+  if(rest.length) section(b,'Finished',rest.map(l=>row(l,l.seq==='finished'?`No reply after ${CAD.length} touches`:'Not a fit')),'');
+  $('#cBack').onclick=()=>{ openCell=null; render(); window.scrollTo(0,0); };
+  $('#cAdd').onclick=()=>addProspect(c.id);
+  $('#cEdit').onclick=()=>editCell(c);
+}
+
+function addProspect(cellId){
+  const cells=O().cells;
+  if(!cells.length){ editCell(null); return; }
+  const def=(cells.find(c=>c.id===cellId)||cells.find(c=>c.id===lastCell)||cells.find(c=>c.status==='active')||cells[0]).id;
+  form({title:'Add prospect',saveLabel:'Save',againLabel:'Save and add another',fields:[
+    {id:'cell',label:'Market',type:'select',options:cells.map(c=>[c.id,`${c.market} in ${c.region}`]),value:def},
+    {id:'company',label:'Company',list:'acctList'},
+    {id:'name',label:'Contact name',half:1},{id:'role',label:'Role',placeholder:'e.g. Owner',half:1},
+    {id:'email',label:'Email',type:'email',half:1},{id:'phone',label:'Phone',type:'tel',half:1},
+    {id:'li',label:'LinkedIn profile (optional)',type:'url',placeholder:'linkedin.com/in/name'},
+    {id:'score',label:'Fit',type:'select',options:[['3','Strong: clear sign they need help now'],['2','Good fit'],['1','Long shot']],value:'2'},
+    {id:'why',label:'Why now',type:'textarea',rows:2,placeholder:'e.g. Running Meta ads, no booking button on their site'}],
+    onSave:()=>{
+      if(!need('company','Add a company to save')) return false;
+      const c=cells.find(x=>x.id===fval('cell'))||cells[0], cname=fval('company');
+      let a=findAcct(cname);
+      if(a&&leads.some(l=>l.accountId===a.id&&l.seq==='active')){ alert(`${a.name} is already in your outreach queue.`); return false; }
+      if(a&&a.status==='active'&&!confirm(`${a.name} is an active client. Add them to cold outreach anyway?`)) return false;
+      if(!a){ a={id:uid(),name:cname,market:c.market,region:c.region,status:'prospect',website:'',notes:'',created:today()}; accounts.push(a); }
+      else if(a.status==='prospect'||!a.market){ a.market=c.market; a.region=c.region; }
+      const pn=fval('name'); let ct=null;
+      if(pn||fval('email')||fval('phone')){
+        ct=contacts.find(x=>x.accountId===a.id&&low(x.name)===low(pn));
+        if(!ct){ ct={id:uid(),accountId:a.id,name:pn||'Main contact',role:'',email:'',phone:'',notes:''}; contacts.push(ct); }
+        ct.role=fval('role')||ct.role; ct.email=fval('email')||ct.email; ct.phone=fval('phone')||ct.phone;
+      }
+      leads.push({id:uid(),name:pn||a.name,company:a.name,accountId:a.id,contactId:ct?ct.id:'',value:0,stage:'cold',max:0,reason:'',
+        source:'Cold outreach',last:'',next:'',notes:'',created:today(),hist:[{s:'cold',d:today()}],
+        seq:'active',touch:0,nextTouch:weekdayAfter(today(),0),score:+fval('score')||2,why:fval('why'),li:fval('li')});
+      lastCell=c.id;
+    },
+    onAgain:()=>addProspect(lastCell)});
+}
+
+function editCell(c){
+  const cells=O().cells;
+  form({title:c?'Edit market':'Add market',saveLabel:c?'Save market':'Add market',fields:[
+    {id:'market',label:'Industry',value:c?.market,list:'mktList',placeholder:'e.g. Healthcare',half:1},
+    {id:'region',label:'City',value:c?.region,list:'regList',placeholder:'e.g. Roanoke',half:1},
+    {id:'status',label:'Status',type:'select',options:CELL_ST.map(s=>[s.k,s.n]),value:c?.status||(cells.some(x=>x.status==='active')?'next':'active')},
+    {id:'note',type:'note',label:'Paused markets drop out of your daily queue. Next up is a reminder of where you go after this one.'},
+    {id:'proof',label:'Proof line used in emails for this industry',type:'textarea',rows:3,value:c?(settings.proofs[c.market]||''):'',placeholder:'e.g. We helped a Lynchburg dental practice add 40 new patients in 90 days.'}],
+    onSave:()=>{
+      if(!need('market','Add an industry')||!need('region','Add a city')) return false;
+      const m=fval('market'), r=fval('region'), dup=cells.find(x=>x!==c&&cellKey(x.market,x.region)===cellKey(m,r));
+      if(dup){ alert(`${dup.market} in ${dup.region} is already one of your markets.`); return false; }
+      if(c){ leadsInCell(c).forEach(l=>{ const a=acctOf(l); if(a){ a.market=m; a.region=r; } }); Object.assign(c,{market:m,region:r,status:fval('status')}); }
+      else{ const n={id:uid(),market:m,region:r,status:fval('status'),created:today()}; cells.push(n); openCell=n.id; }
+      const p=fval('proof'); if(p) settings.proofs[m]=p; else delete settings.proofs[m];
+    },
+    onDelete:c?()=>{
+      if(!confirm(`Remove ${c.market} in ${c.region}? Its prospects stay in your clients and pipeline.`)) return false;
+      settings.cells=cells.filter(x=>x!==c); openCell=null;
+    }:null});
+}
+
+function editMessages(){
+  const T=O().tpl;
+  const f=[{id:'n0',type:'note',label:'Fill-ins: {first} {company} {city} {market} {proof} {me}. Clear a message to go back to the original.'},
+    {id:'signoff',label:'Sign-off ({me})',type:'textarea',rows:2,value:settings.signoff||'Sam',half:1},
+    {id:'cap',label:'Daily outreach goal',type:'number',value:settings.cap||10,half:1}];
+  CAD.forEach((s,i)=>{
+    if(DEF_T[i].s!=null) f.push({id:'s'+i,label:`Touch ${i+1}, ${s.label.toLowerCase()}: subject`,value:(T[i]&&T[i].s)||DEF_T[i].s});
+    f.push({id:'b'+i,label:DEF_T[i].s!=null?'Message':`Touch ${i+1}, ${s.label.toLowerCase()}`,type:'textarea',rows:s.ch==='LinkedIn'?3:7,value:(T[i]&&T[i].b)||DEF_T[i].b});
+  });
+  form({title:'Messages',saveLabel:'Save messages',noFocus:1,fields:f,onSave:()=>{
+    settings.signoff=fval('signoff')||'Sam'; settings.cap=Math.max(1,Math.round(+fval('cap')||10));
+    CAD.forEach((s,i)=>{ const o={}, sv=DEF_T[i].s!=null?fval('s'+i):'', bv=fval('b'+i);
+      if(sv&&sv!==DEF_T[i].s) o.s=sv; if(bv&&bv!==DEF_T[i].b) o.b=bv; T[i]=o; });
+  }});
 }
 
 function renderPipeline(){
