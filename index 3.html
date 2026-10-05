@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lead funnel</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#18202C;--muted:#5D6878;--line:#DCE1E8;--bg:#F2F4F7;--card:#fff;
+--cold:#5B8FD0;--warm:#E0A030;--hot:#DE4A2C;--proposal:#A8235A;--won:#2E8B57;--lost:#8A93A0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Archivo,system-ui,sans-serif;font-size:15px;line-height:1.45}
+.wrap{max-width:640px;margin:0 auto;padding:20px 16px 96px}
+h1{font-stretch:120%;font-weight:800;font-size:30px;line-height:1.05;margin:0 0 14px;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0 0 18px}
+.tabs{display:flex;gap:4px;background:#E4E8EE;border-radius:10px;padding:4px;margin-bottom:18px}
+.tab{flex:1;border:0;background:none;padding:9px;border-radius:7px;font:inherit;font-weight:600;color:var(--muted);cursor:pointer}
+.tab.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(24,32,44,.12)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:22px}
+.stats.four{grid-template-columns:1fr 1fr;margin-bottom:10px}
+.stat{background:var(--card);padding:10px 12px}
+.stat b{display:block;font-stretch:115%;font-size:20px;font-weight:750}
+.stat span{color:var(--muted);font-size:12.5px}
+.stat.alert b{color:var(--hot)}
+#funnel{display:flex;flex-direction:column;align-items:stretch;margin-bottom:26px}
+.seg{border:0;cursor:pointer;height:62px;background:var(--c);color:#fff;font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .15s}
+.seg .top{display:flex;align-items:baseline;gap:8px}
+.seg .cnt{font-stretch:125%;font-weight:800;font-size:24px;line-height:1}
+.seg .nm{font-weight:600;font-size:15px}
+.seg .val{font-size:12.5px;opacity:.9}
+#funnel.filtering .seg:not(.on){opacity:.35}
+.seg:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[role=button]:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.conv{height:22px;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:var(--muted)}
+.bar{display:flex;justify-content:space-between;align-items:center;margin:0 0 10px}
+.bar h2{font-size:18px;font-stretch:115%;margin:0}
+.link{background:none;border:0;color:var(--muted);font:inherit;text-decoration:underline;cursor:pointer;padding:4px}
+.group{margin-bottom:22px}
+.ghead{display:flex;align-items:baseline;gap:8px;border-left:4px solid var(--c);padding-left:10px;margin-bottom:8px}
+.ghead b{font-size:15px}
+.ghead span{color:var(--muted);font-size:13px}
+.lead{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:8px;display:flex;gap:10px;align-items:center}
+.lead .main{flex:1;min-width:0;cursor:pointer}
+.lead .nm{font-weight:650}
+.lead .co{color:var(--muted);font-size:13.5px}
+.lead .next{font-size:13.5px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip{display:inline-block;font-size:12px;padding:1px 7px;border-radius:20px;background:#FDE8E3;color:#A3321C;margin-top:5px}
+.money{font-weight:650;font-stretch:110%;white-space:nowrap}
+.moves{display:flex;flex-direction:column;gap:4px}
+.mv{width:34px;height:30px;border-radius:7px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:15px;color:var(--ink)}
+.mv:disabled{opacity:.3;cursor:default}
+.empty{background:var(--card);border:1px dashed var(--line);border-radius:10px;padding:22px;text-align:center;color:var(--muted)}
+.btn{font:inherit;font-weight:650;border-radius:9px;padding:11px 16px;cursor:pointer;border:1px solid var(--ink);background:var(--ink);color:#fff}
+.btn.ghost{background:#fff;color:var(--ink);border-color:var(--line)}
+.btn.danger{background:#fff;color:#A3321C;border-color:#F0C3B8}
+.fab{position:fixed;right:16px;bottom:18px;box-shadow:0 6px 18px rgba(24,32,44,.25)}
+/* analytics */
+.note{font-size:13px;color:var(--muted);margin:0 0 16px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:14px}
+.panel h3{margin:0 0 2px;font-size:16px;font-stretch:112%}
+.panel .q{color:var(--muted);font-size:13px;margin:0 0 12px}
+.hb{display:grid;grid-template-columns:104px 1fr 72px;gap:8px;align-items:center;font-size:13.5px;margin:7px 0}
+.hb .r{text-align:right;font-weight:600}
+.track{height:12px;background:#EEF1F5;border-radius:6px;overflow:hidden;display:flex}
+.fill{height:100%;background:var(--c,var(--ink))}
+.fill.fc{background:repeating-linear-gradient(135deg,#E0A030 0 6px,#EBBE6E 6px 12px)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-weight:600;color:var(--muted);font-size:12.5px;padding:0 6px 6px 0;border-bottom:1px solid var(--line)}
+td{padding:8px 6px 8px 0;border-bottom:1px solid #EEF1F5}
+td.n,th.n{text-align:right}
+.cols{display:flex;align-items:flex-end;gap:6px;height:120px}
+.col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;font-size:11.5px;color:var(--muted);gap:3px}
+.col i{display:block;width:100%;background:var(--cold);border-radius:4px 4px 0 0;min-height:2px}
+.col b{color:var(--ink);font-weight:600}
+.goalrow{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.goalrow input{max-width:160px}
+.legend{display:flex;gap:14px;font-size:12.5px;color:var(--muted);margin-top:8px}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px;background:var(--c)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:520px){.split{grid-template-columns:1fr}}
+dialog{border:0;border-radius:14px;padding:0;width:min(520px,94vw);max-height:90vh}
+dialog::backdrop{background:rgba(24,32,44,.45)}
+.sheet{padding:18px}
+.sheet h3{margin:0 0 12px;font-stretch:115%;font-size:20px}
+label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+input,select,textarea{width:100%;font:inherit;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.actions .spacer{flex:1}
+[hidden]{display:none!important}
+.savenote{font-size:12.5px;color:var(--won);margin:-10px 0 16px}
+.savenote.bad{color:#A3321C}
+.backup{display:flex;gap:16px;justify-content:center;margin-top:8px}
+.backup .link{margin:0;font-size:13px;display:inline}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Lead funnel</h1>
+  <div class="tabs" role="tablist">
+    <button class="tab on" role="tab" id="tabPipe" aria-selected="true">Pipeline</button>
+    <button class="tab" role="tab" id="tabStats" aria-selected="false">Analytics</button>
+  </div>
+
+  <section id="pipeView">
+    <p class="sub">Tap a stage to filter. Use the arrows to move a lead up or down.</p>
+    <p class="savenote" id="saveNote" role="status"></p>
+    <div class="stats" id="stats"></div>
+    <div id="funnel"></div>
+    <div class="bar"><h2 id="listTitle">All leads</h2><button class="link" id="toggleLost"></button></div>
+    <div id="list"></div>
+    <div class="backup"><button class="link" id="backupBtn">Back up data</button><label class="link" for="restoreIn">Restore from backup</label><input type="file" id="restoreIn" accept=".json,application/json" hidden></div>
+  </section>
+
+  <section id="statsView" hidden></section>
+</div>
+<button class="btn fab" id="addBtn">Add lead</button>
+
+<dialog id="dlg"><div class="sheet">
+  <h3 id="dlgTitle">Add lead</h3>
+  <label for="f-name">Name</label><input id="f-name" autocomplete="off">
+  <label for="f-company">Company</label><input id="f-company" autocomplete="off">
+  <div class="row2">
+    <div><label for="f-value">Deal value ($)</label><input id="f-value" type="number" inputmode="numeric" min="0"></div>
+    <div><label for="f-stage">Stage</label><select id="f-stage"></select></div>
+  </div>
+  <div id="reasonRow" hidden><label for="f-reason">Why was it lost?</label>
+    <select id="f-reason"><option value="">Choose a reason</option><option>Price</option><option>Timing</option><option>Went with competitor</option><option>No response</option><option>Not a fit</option><option>Other</option></select></div>
+  <div class="row2">
+    <div><label for="f-source">Source</label>
+      <select id="f-source"><option>Referral</option><option>Inbound</option><option>Cold outreach</option><option>LinkedIn</option><option>Event</option><option>Existing client</option><option>Other</option></select></div>
+    <div><label for="f-last">Last contact</label><input id="f-last" type="date"></div>
+  </div>
+  <label for="f-next">Next step</label><input id="f-next" placeholder="e.g. Send case study Tuesday" autocomplete="off">
+  <label for="f-notes">Notes</label><textarea id="f-notes" rows="3"></textarea>
+  <div class="actions">
+    <button class="btn" id="saveBtn">Save lead</button>
+    <button class="btn ghost" id="touchBtn">Contacted today</button>
+    <span class="spacer"></span>
+    <button class="btn danger" id="delBtn">Delete</button>
+    <button class="btn ghost" id="cancelBtn">Cancel</button>
+  </div>
+</div></dialog>
+
+<script>
+const STAGES=[
+ {k:'cold',n:'Cold',p:.05,stale:30,d:'Fits your ideal client, no real conversation yet'},
+ {k:'warm',n:'Warm',p:.20,stale:14,d:'Engaged: replied, took a call, asked questions'},
+ {k:'hot',n:'Hot',p:.50,stale:5,d:'Clear need, budget, and timing; talking specifics'},
+ {k:'proposal',n:'Proposal',p:.70,stale:3,d:'Proposal or quote is in their hands'},
+ {k:'won',n:'Won',p:1,stale:null,d:'Signed'}];
+const LOST={k:'lost',n:'Lost',d:'Went dark or said no'};
+const KEY='funnel-leads', SKEY='funnel-settings';
+const $=s=>document.querySelector(s);
+const idx=k=>STAGES.findIndex(s=>s.k===k);
+const iso=d=>d.toISOString().slice(0,10);
+const today=()=>iso(new Date());
+const days=d=>d?Math.floor((Date.now()-new Date(d+'T12:00:00'))/864e5):null;
+const dd=(a,b)=>Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/864e5);
+const money=n=>'$'+(n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e4?Math.round(n/1e3)+'k':n>=1e3?(n/1e3).toFixed(1)+'k':Math.round(n));
+const sum=a=>a.reduce((x,l)=>x+(+l.value||0),0);
+const pct=x=>x==null?'—':Math.round(x*100)+'%';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let leads=[],settings={goal:0},filter='all',showLost=false,editing=null,tab='pipe';
+
+// Cloud sync: data lives in Netlify Blobs behind /api/leads.
+const API='/api/leads';
+let rev=0, saving=Promise.resolve();
+function cacheLocal(){ try{ localStorage.setItem('funnel-cache',JSON.stringify({leads,settings,rev})); }catch(e){} }
+async function api(method,body){
+  const r=await fetch(API,{method,headers:{'content-type':'application/json'},body:body?JSON.stringify(body):undefined});
+  const d=await r.json().catch(()=>({}));
+  if(r.status===409) return {conflict:true,...d};
+  if(!r.ok) throw new Error(d.error||'Server error');
+  return d;
+}
+function apply(d){
+  leads=d.leads||[]; settings=d.settings||{goal:0}; rev=d.rev||0;
+  leads.forEach(l=>{ if(!l.hist) l.hist=[{s:l.stage,d:l.created||today()}]; });
+  cacheLocal(); render();
+}
+function showSave(state){
+  const el=$('#saveNote'); if(!el) return;
+  const msg={ok:'Saved. Syncs across all your devices.',
+    fail:"Couldn't reach the server. Your change is kept on this device and will sync with your next change.",
+    offline:"Can't reach the server right now. Showing the last copy saved on this device.",
+    conflict:'This was just changed on another device, so the latest version was loaded. Redo your last change if it is missing.'}[state];
+  el.textContent=msg; el.className='savenote'+(state==='ok'?'':' bad');
+}
+async function pull(){ apply(await api('GET')); showSave('ok'); }
+async function push(){
+  try{
+    const d=await api('PUT',{leads,settings,rev});
+    if(d.conflict){ apply(d); showSave('conflict'); return; }
+    rev=d.rev; cacheLocal(); showSave('ok');
+  }catch(e){ cacheLocal(); showSave('fail'); }
+}
+const save=()=>(saving=saving.then(push));
+const saveSettings=save;
+async function load(){
+  try{ await pull(); }
+  catch(e){
+    try{ const c=JSON.parse(localStorage.getItem('funnel-cache')||'null'); if(c) apply(c); }catch(_){}
+    showSave('offline'); render();
+  }
+}
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden&&!$('#dlg').open) saving.then(()=>pull()).catch(()=>{});
+});
+function backup(){
+  const blob=new Blob([JSON.stringify({leads,settings,exported:today()},null,1)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`lead-funnel-backup-${today()}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+function restore(file){
+  const r=new FileReader();
+  r.onload=()=>{ try{ const d=JSON.parse(r.result); if(!Array.isArray(d.leads)) throw 0;
+      if(leads.length&&!confirm(`Replace your ${leads.length} current leads with ${d.leads.length} from the backup?`)) return;
+      leads=d.leads; settings=d.settings||settings; save(); saveSettings(); render();
+    }catch(e){ alert("That file isn't a lead funnel backup. Choose a .json file made with Back up data."); } };
+  r.readAsText(file);
+}
+function track(l){ l.hist=l.hist||[]; const last=l.hist[l.hist.length-1]; if(!last||last.s!==l.stage) l.hist.push({s:l.stage,d:today()}); }
+function wonDate(l){ const h=(l.hist||[]).filter(x=>x.s==='won'); return h.length?h[h.length-1].d:(l.last||l.created||today()); }
+function staleDays(l){ const s=STAGES[idx(l.stage)]; if(!s||!s.stale) return 0; const d=days(l.last); return d!==null&&d>s.stale?d:0; }
+const openLeads=()=>leads.filter(l=>idx(l.stage)>=0&&l.stage!=='won');
+const weighted=a=>a.reduce((x,l)=>x+(+l.value||0)*STAGES[idx(l.stage)].p,0);
+
+function setTab(t){
+  tab=t;
+  $('#tabPipe').classList.toggle('on',t==='pipe'); $('#tabPipe').setAttribute('aria-selected',t==='pipe');
+  $('#tabStats').classList.toggle('on',t==='stats'); $('#tabStats').setAttribute('aria-selected',t==='stats');
+  $('#pipeView').hidden=t!=='pipe'; $('#statsView').hidden=t!=='stats'; $('#addBtn').hidden=t!=='pipe';
+  render();
+}
+$('#tabPipe').onclick=()=>setTab('pipe');
+$('#tabStats').onclick=()=>setTab('stats');
+function render(){ tab==='pipe'?renderPipeline():renderStats(); }
+
+function renderPipeline(){
+  const open=openLeads(), stale=open.filter(staleDays).length;
+  $('#stats').innerHTML=
+    `<div class="stat"><b>${money(sum(open))}</b><span>Open pipeline</span></div>
+     <div class="stat"><b>${money(weighted(open))}</b><span>Weighted forecast</span></div>
+     <div class="stat ${stale?'alert':''}"><b>${stale}</b><span>Need follow-up</span></div>`;
+  const f=$('#funnel'); f.innerHTML=''; f.classList.toggle('filtering',filter!=='all');
+  const reached=i=>leads.filter(l=>(l.max??0)>=i).length;
+  STAGES.forEach((s,i)=>{
+    const inS=leads.filter(l=>l.stage===s.k);
+    const a=(i*12)/2, b=((i+1)*12)/2;
+    const seg=document.createElement('button');
+    seg.className='seg'+(filter===s.k?' on':'');
+    seg.style.setProperty('--c',`var(--${s.k})`);
+    seg.style.clipPath=`polygon(${a}% 0,${100-a}% 0,${100-b}% 100%,${b}% 100%)`;
+    seg.setAttribute('aria-pressed',filter===s.k);
+    seg.innerHTML=`<span class="top"><span class="cnt">${inS.length}</span><span class="nm">${s.n}</span></span><span class="val">${money(sum(inS))}</span>`;
+    seg.onclick=()=>{filter=filter===s.k?'all':s.k;render();};
+    f.appendChild(seg);
+    if(i<STAGES.length-1){
+      const r0=reached(i),r1=reached(i+1), c=document.createElement('div'); c.className='conv';
+      c.textContent=r0?`${Math.round(r1/r0*100)}% made it to ${STAGES[i+1].n}`:''; f.appendChild(c);
+    }
+  });
+  const lostN=leads.filter(l=>l.stage==='lost').length;
+  $('#toggleLost').textContent=showLost?'Hide lost':`Show lost (${lostN})`;
+  $('#toggleLost').style.visibility=lostN?'visible':'hidden';
+  $('#listTitle').textContent=filter==='all'?'All leads':STAGES[idx(filter)].n+' leads';
+  const groups=(filter==='all'?[...STAGES].reverse():[STAGES[idx(filter)]]).concat(showLost&&filter==='all'?[LOST]:[]);
+  const list=$('#list'); list.innerHTML='';
+  if(!leads.length){
+    list.innerHTML=`<div class="empty"><p>No leads yet. Add your first one, or load a few examples to see how it works.</p><button class="btn ghost" id="sample">Load example leads</button></div>`;
+    $('#sample').onclick=loadSamples; return;
+  }
+  groups.forEach(g=>{
+    const items=leads.filter(l=>l.stage===g.k).sort((x,y)=>staleDays(y)-staleDays(x)||(+y.value||0)-(+x.value||0));
+    if(!items.length&&filter==='all') return;
+    const wrap=document.createElement('div'); wrap.className='group';
+    wrap.innerHTML=`<div class="ghead" style="--c:var(--${g.k})"><b>${g.n}</b><span>${g.d}</span></div>`;
+    if(!items.length) wrap.innerHTML+=`<div class="empty">Nothing here right now.</div>`;
+    items.forEach(l=>{
+      const i=idx(l.stage), sd=staleDays(l);
+      const row=document.createElement('div'); row.className='lead';
+      row.innerHTML=`<div class="main" tabindex="0" role="button" aria-label="Edit ${esc(l.name)}">
+          <div class="nm">${esc(l.name)}</div>
+          <div class="co">${esc(l.company)}${l.company&&l.source?' / ':''}${esc(l.source)}</div>
+          ${l.stage==='lost'&&l.reason?`<div class="next">Lost: ${esc(l.reason)}</div>`:l.next?`<div class="next">Next: ${esc(l.next)}</div>`:''}
+          ${sd?`<span class="chip">No contact in ${sd} days</span>`:''}
+        </div>
+        <div class="money">${l.value?money(+l.value):''}</div>
+        <div class="moves">
+          <button class="mv up" aria-label="Move up a stage" ${i<0||i>=STAGES.length-1?'disabled':''}>↑</button>
+          <button class="mv dn" aria-label="Move down a stage" ${i<=0?'disabled':''}>↓</button>
+        </div>`;
+      const main=row.querySelector('.main');
+      main.onclick=()=>openEditor(l);
+      main.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openEditor(l);}};
+      row.querySelector('.up').onclick=()=>move(l,1);
+      row.querySelector('.dn').onclick=()=>move(l,-1);
+      wrap.appendChild(row);
+    });
+    list.appendChild(wrap);
+  });
+}
+
+function hbars(rows,fmt){ // rows: [{label,value,color}]
+  const max=Math.max(1,...rows.map(r=>r.value));
+  return rows.map(r=>`<div class="hb"><span>${esc(r.label)}</span><div class="track"><div class="fill" style="width:${r.value/max*100}%;--c:${r.color||'var(--ink)'}"></div></div><span class="r">${fmt(r.value)}</span></div>`).join('');
+}
+
+function renderStats(){
+  const v=$('#statsView');
+  if(!leads.length){ v.innerHTML=`<div class="empty">Add a few leads on the Pipeline tab and your numbers will show up here.</div>`; return; }
+  const won=leads.filter(l=>l.stage==='won'), lost=leads.filter(l=>l.stage==='lost'), open=openLeads();
+  const closed=won.length+lost.length, winRate=closed?won.length/closed:null;
+  const cycles=won.map(l=>dd(l.created||wonDate(l),wonDate(l))).filter(n=>n>=0);
+  const avgCycle=cycles.length?Math.round(cycles.reduce((a,b)=>a+b,0)/cycles.length):null;
+  let h=`<div class="stats four">
+    <div class="stat"><b>${pct(winRate)}</b><span>Win rate (won vs lost)</span></div>
+    <div class="stat"><b>${won.length?money(sum(won)/won.length):'—'}</b><span>Average won deal</span></div>
+    <div class="stat"><b>${avgCycle==null?'—':avgCycle+' days'}</b><span>Average time to close</span></div>
+    <div class="stat"><b>${money(sum(won))}</b><span>Total won</span></div></div>`;
+  h+=`<p class="note">${closed<10?`Based on ${closed} closed deal${closed===1?'':'s'}. Treat these rates as rough until you have 10 or more.`:`Based on ${closed} closed deals.`}</p>`;
+
+  // Goal
+  const n=new Date(), qs=iso(new Date(n.getFullYear(),Math.floor(n.getMonth()/3)*3,1));
+  const wonQ=sum(won.filter(l=>wonDate(l)>=qs)), fc=weighted(open), goal=+settings.goal||0;
+  const remaining=Math.max(goal-wonQ,0), cover=remaining?sum(open)/remaining:null;
+  h+=`<div class="panel"><h3>Quarter goal</h3><p class="q">Will we hit our number this quarter?</p>
+    <div class="goalrow"><label for="goal" style="margin:0;white-space:nowrap">Revenue goal ($)</label><input id="goal" type="number" inputmode="numeric" min="0" value="${goal||''}" placeholder="e.g. 100000"></div>`;
+  if(goal){
+    const w1=Math.min(wonQ/goal*100,100), w2=Math.min(fc/goal*100,100-w1);
+    h+=`<div class="track" style="height:16px"><div class="fill" style="width:${w1}%;--c:var(--won)"></div><div class="fill fc" style="width:${w2}%"></div></div>
+      <div class="legend"><span style="--c:var(--won)">Won ${money(wonQ)}</span><span style="--c:var(--warm)">Likely ${money(fc)}</span></div>
+      <p class="q" style="margin:10px 0 0">You're tracking to about ${Math.round((wonQ+fc)/goal*100)}% of goal. ${remaining?`Open pipeline covers the remaining ${money(remaining)} ${cover.toFixed(1)}×; many teams aim for 3× because most deals won't close.`:'Goal already reached.'}</p>`;
+  }
+  h+=`</div>`;
+
+  // Sources
+  const srcs={}; leads.forEach(l=>{const s=l.source||'Other'; (srcs[s]=srcs[s]||{n:0,w:0,l:0,rev:0}); srcs[s].n++; if(l.stage==='won'){srcs[s].w++;srcs[s].rev+=+l.value||0;} if(l.stage==='lost')srcs[s].l++;});
+  const srows=Object.entries(srcs).sort((a,b)=>b[1].rev-a[1].rev||b[1].n-a[1].n);
+  h+=`<div class="panel"><h3>Lead sources</h3><p class="q">Which channels bring in deals that actually close?</p>
+    <table><thead><tr><th>Source</th><th class="n">Leads</th><th class="n">Win rate</th><th class="n">Won</th></tr></thead><tbody>
+    ${srows.map(([s,d])=>`<tr><td>${esc(s)}</td><td class="n">${d.n}</td><td class="n">${d.w+d.l?pct(d.w/(d.w+d.l)):'—'}</td><td class="n">${money(d.rev)}</td></tr>`).join('')}
+    </tbody></table></div>`;
+
+  // Time in stage
+  const dur={}; leads.forEach(l=>{const hs=l.hist||[]; for(let i=0;i<hs.length-1;i++){(dur[hs[i].s]=dur[hs[i].s]||[]).push(Math.max(dd(hs[i].d,hs[i+1].d),0));}});
+  const trows=STAGES.slice(0,4).map(s=>{const a=dur[s.k]||[]; return {label:s.n,value:a.length?a.reduce((x,y)=>x+y,0)/a.length:0,color:`var(--${s.k})`,has:a.length};});
+  h+=`<div class="panel"><h3>Time in each stage</h3><p class="q">Where do deals slow down? Average days before a lead moved on.</p>
+    ${trows.some(r=>r.has)?hbars(trows,x=>x?Math.round(x)+' days':'—'):'<p class="q">Move a few leads between stages and this will fill in.</p>'}</div>`;
+
+  // Losses
+  const byStage=STAGES.slice(0,4).map(s=>({label:s.n,value:lost.filter(l=>(l.max??0)===idx(s.k)).length,color:`var(--${s.k})`}));
+  const reasons={}; lost.forEach(l=>{const r=l.reason||'No reason given'; reasons[r]=(reasons[r]||0)+1;});
+  h+=`<div class="panel"><h3>Lost deals</h3><p class="q">How far did lost deals get, and why did they fall through?</p>
+    ${lost.length?`<div class="split"><div>${hbars(byStage,x=>x)}</div><div>${hbars(Object.entries(reasons).sort((a,b)=>b[1]-a[1]).map(([k,v])=>({label:k,value:v,color:'var(--lost)'})),x=>x)}</div></div>`:'<p class="q">No lost deals yet.</p>'}</div>`;
+
+  // Aging
+  const buckets=[['0–7 days',0,7],['8–14 days',8,14],['15–30 days',15,30],['30+ days',31,1e9]];
+  h+=`<div class="panel"><h3>Open lead freshness</h3><p class="q">How long since we last talked to each open lead?</p>
+    ${hbars(buckets.map(([lab,a,b],i)=>({label:lab,value:open.filter(l=>{const d=days(l.last)??0;return d>=a&&d<=b;}).length,color:['var(--won)','var(--warm)','var(--hot)','var(--proposal)'][i]})),x=>x)}</div>`;
+
+  // New leads per week
+  const wk=Array(8).fill(0); leads.forEach(l=>{const d=days(l.created); if(d!=null&&d>=0&&d<56) wk[7-Math.floor(d/7)]++;});
+  const wmax=Math.max(1,...wk);
+  h+=`<div class="panel"><h3>New leads per week</h3><p class="q">Are we filling the top of the funnel steadily?</p>
+    <div class="cols">${wk.map((c,i)=>`<div class="col"><b>${c}</b><i style="height:${c/wmax*80}%"></i><span>${i===7?'This wk':(7-i)+'w ago'}</span></div>`).join('')}</div></div>`;
+
+  v.innerHTML=h;
+  $('#goal').onchange=e=>{settings.goal=+e.target.value||0; saveSettings(); renderStats();};
+}
+
+function move(l,dir){
+  const i=idx(l.stage)+dir; if(i<0||i>=STAGES.length) return;
+  l.stage=STAGES[i].k; l.max=Math.max(l.max??0,i); l.last=today(); track(l);
+  save(); render();
+}
+
+const stageSel=$('#f-stage');
+stageSel.innerHTML=[...STAGES,LOST].map(s=>`<option value="${s.k}">${s.n}</option>`).join('');
+stageSel.onchange=()=>{$('#reasonRow').hidden=stageSel.value!=='lost';};
+function openEditor(l){
+  editing=l||null;
+  $('#dlgTitle').textContent=l?'Edit lead':'Add lead';
+  $('#delBtn').style.display=l?'':'none';
+  $('#f-name').value=l?.name||''; $('#f-company').value=l?.company||'';
+  $('#f-value').value=l?.value||''; stageSel.value=l?.stage||'cold';
+  $('#f-reason').value=l?.reason||''; $('#reasonRow').hidden=stageSel.value!=='lost';
+  $('#f-source').value=l?.source||'Referral'; $('#f-last').value=l?.last||today();
+  $('#f-next').value=l?.next||''; $('#f-notes').value=l?.notes||'';
+  $('#dlg').showModal(); $('#f-name').focus();
+}
+function commit(){
+  const name=$('#f-name').value.trim();
+  if(!name){ $('#f-name').focus(); $('#f-name').placeholder='Add a name to save this lead'; return; }
+  const d={name,company:$('#f-company').value.trim(),value:+$('#f-value').value||0,stage:stageSel.value,
+    reason:stageSel.value==='lost'?$('#f-reason').value:'',
+    source:$('#f-source').value,last:$('#f-last').value,next:$('#f-next').value.trim(),notes:$('#f-notes').value.trim()};
+  const si=idx(d.stage);
+  if(editing){ Object.assign(editing,d); if(si>=0) editing.max=Math.max(editing.max??0,si); track(editing); }
+  else leads.push({id:Date.now().toString(36),created:today(),max:Math.max(si,0),hist:[{s:d.stage,d:today()}],...d});
+  save(); $('#dlg').close(); render();
+}
+$('#addBtn').onclick=()=>openEditor(null);
+$('#saveBtn').onclick=commit;
+$('#cancelBtn').onclick=()=>$('#dlg').close();
+$('#touchBtn').onclick=()=>{$('#f-last').value=today();};
+$('#delBtn').onclick=()=>{ if(editing&&confirm(`Delete ${editing.name}?`)){ leads=leads.filter(x=>x!==editing); save(); $('#dlg').close(); render(); } };
+$('#toggleLost').onclick=()=>{showLost=!showLost;render();};
+
+function loadSamples(){
+  const ago=n=>iso(new Date(Date.now()-n*864e5));
+  const S=[
+   ['Dana Whitfield','Blue Ridge Credit Union',18000,'cold',0,'Cold outreach',40,40,'Connect on LinkedIn',''],
+   ['Marcus Hale','Hale Orthodontics',9000,'cold',0,'Event',6,6,'Send intro email',''],
+   ['Jill Park','Forest Family Medicine',15000,'cold',0,'LinkedIn',12,12,'Comment on her post',''],
+   ['Priya Nair','Summit Prep Academy',24000,'warm',1,'Referral',21,3,'Book discovery call',''],
+   ['Leo Grant','Grant & Co. Boutique',7500,'warm',1,'Inbound',35,20,'Share fashion case study',''],
+   ['Erin Cole','Piedmont Health',42000,'hot',2,'Referral',30,2,'Scope call Thursday',''],
+   ['Nate Burke','Burke Financial',20000,'hot',2,'Event',28,9,'Confirm budget',''],
+   ['Tom Reyes','Reyes Wealth Partners',30000,'proposal',3,'Existing client',25,6,'Follow up on proposal',''],
+   ['Amy Shaw','Lakeside Dental',12000,'won',4,'Inbound',50,10,'Kickoff meeting',''],
+   ['Kara Mills','Mills Academy',26000,'won',4,'Referral',70,35,'Monthly report',''],
+   ['Raj Patel','Patel Insurance',16000,'won',4,'Referral',45,15,'',''],
+   ['Ben Ortiz','Ortiz Realty',8000,'lost',2,'Cold outreach',60,45,'','Price'],
+   ['Sue Lin','Lin Apparel',11000,'lost',1,'LinkedIn',55,30,'','No response'],
+   ['Greg Moss','Moss Clinic',22000,'lost',3,'Cold outreach',48,20,'','Went with competitor']];
+  leads=S.map((r,i)=>{
+    const [name,company,value,stage,max,source,cAgo,lAgo,next,reason]=r;
+    const steps=STAGES.slice(0,max+1).map(s=>s.k).concat(stage==='lost'?['lost']:[]);
+    const gap=steps.length>1?(cAgo-lAgo)/(steps.length-1):0;
+    return {id:'s'+i,name,company,value,stage,max,source,next,reason,notes:'',
+      created:ago(cAgo),last:ago(lAgo),hist:steps.map((s,j)=>({s,d:ago(Math.round(cAgo-j*gap))}))};
+  });
+  save(); render();
+}
+$('#backupBtn').onclick=backup;
+$('#restoreIn').onchange=e=>{ if(e.target.files[0]) restore(e.target.files[0]); e.target.value=''; };
+load();
+</script>
+</body>
+</html>
