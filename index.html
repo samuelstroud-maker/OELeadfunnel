@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Lead funnel</title>
+<title>Clients &amp; pipeline</title>
 <meta name="robots" content="noindex">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&display=swap" rel="stylesheet">
 <style>
@@ -15,7 +15,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:Archivo,system-u
 h1{font-stretch:120%;font-weight:800;font-size:30px;line-height:1.05;margin:0 0 14px;letter-spacing:-.01em}
 .sub{color:var(--muted);margin:0 0 18px}
 .tabs{display:flex;gap:4px;background:#E4E8EE;border-radius:10px;padding:4px;margin-bottom:18px}
-.tab{flex:1;border:0;background:none;padding:9px;border-radius:7px;font:inherit;font-weight:600;color:var(--muted);cursor:pointer}
+.tab{flex:1;border:0;background:none;padding:9px 2px;font-size:14px;border-radius:7px;font:inherit;font-weight:600;color:var(--muted);cursor:pointer}
 .tab.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(24,32,44,.12)}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:22px}
 .stats.four{grid-template-columns:1fr 1fr;margin-bottom:10px}
@@ -88,39 +88,90 @@ input,select,textarea{width:100%;font:inherit;padding:9px 10px;border:1px solid 
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
 .actions .spacer{flex:1}
 [hidden]{display:none!important}
-.savenote{font-size:12.5px;color:var(--won);margin:-10px 0 16px}
+.savenote{font-size:12.5px;color:var(--won);margin:-8px 0 14px}
 .savenote.bad{color:#A3321C}
 .backup{display:flex;gap:16px;justify-content:center;margin-top:8px}
 .backup .link{margin:0;font-size:13px;display:inline}
+/* crm */
+.hint{color:var(--muted);font-size:13.5px;margin:0 0 10px}
+h2.sec{font-size:17px;font-stretch:115%;margin:24px 0 10px}
+.row{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:8px;display:flex;gap:10px;align-items:center}
+.row .main{flex:1;min-width:0;cursor:pointer}
+.row .nm{font-weight:650}
+.row .co,.co{color:var(--muted);font-size:13.5px}
+.meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:20px;vertical-align:1px}
+.pill.active{background:#E2F2E8;color:#1F6B41}.pill.prospect{background:#E4EDF8;color:#2F5F9A}
+.pill.paused{background:#FBF0D9;color:#85570A}.pill.former{background:#ECEEF1;color:#5D6878}
+.due{font-size:12.5px;color:var(--muted)}.due.late{color:#A3321C;font-weight:650}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--c);flex:none}
+.check{width:28px;height:28px;flex:none;border-radius:50%;border:2px solid #B9C1CC;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;padding:0}
+.check.done{background:var(--won);border-color:var(--won)}
+.struck{text-decoration:line-through;color:var(--muted)}
+.search{margin-bottom:10px;-webkit-appearance:none}
+.chips{display:flex;gap:6px;overflow-x:auto;margin:0 -16px 10px;padding:0 16px 2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.fchip{flex:none;border:1px solid var(--line);background:#fff;border-radius:20px;padding:6px 12px;font:inherit;font-size:13.5px;cursor:pointer;color:var(--ink)}
+.fchip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.fchip small{opacity:.65;margin-left:3px;font-size:12px}
+.mkt{font-size:13.5px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:8px;padding:9px 12px;margin:2px 0 14px}
+.back{text-decoration:none;padding:4px 0;margin-bottom:6px;color:var(--ink);font-weight:600}
+.aname{font-stretch:118%;font-weight:800;font-size:26px;line-height:1.1;margin:4px 0 6px;letter-spacing:-.01em}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 18px}
+.acts .btn{padding:8px 12px;font-size:14px}
+.btn.sm{padding:6px 10px;font-size:13px;text-decoration:none;display:inline-block}
+.links{display:flex;gap:6px;flex:none}
+.notes{margin:0;white-space:pre-wrap;font-size:14px}
+.co a{color:var(--ink)}
+.tl{border-left:2px solid var(--line);margin:0 0 0 5px;padding-left:16px}
+.ev{position:relative;padding:2px 0 12px}
+.ev::before{content:"";position:absolute;left:-22px;top:7px;width:10px;height:10px;border-radius:50%;background:var(--c,var(--muted));box-shadow:0 0 0 3px var(--bg)}
+.ev b{font-weight:650}.ev .d{color:var(--muted);font-size:12.5px;margin-left:4px}
+.ev p{margin:3px 0 0;font-size:14px;white-space:pre-wrap}
+.ev[role=button]{cursor:pointer}
+#fBody{display:grid;grid-template-columns:1fr 1fr;column-gap:10px}
+#fBody>div{grid-column:1/-1;min-width:0}#fBody>div.half{grid-column:auto}
+.lead .linkline{margin-top:4px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Lead funnel</h1>
+  <h1>Clients &amp; pipeline</h1>
   <div class="tabs" role="tablist">
-    <button class="tab on" role="tab" id="tabPipe" aria-selected="true">Pipeline</button>
-    <button class="tab" role="tab" id="tabStats" aria-selected="false">Analytics</button>
+    <button class="tab on" role="tab" data-tab="today" aria-selected="true">Today</button>
+    <button class="tab" role="tab" data-tab="pipe" aria-selected="false">Pipeline</button>
+    <button class="tab" role="tab" data-tab="clients" aria-selected="false">Clients</button>
+    <button class="tab" role="tab" data-tab="stats" aria-selected="false">Analytics</button>
   </div>
+  <p class="savenote" id="saveNote" role="status"></p>
 
-  <section id="pipeView">
+  <section id="todayView"></section>
+
+  <section id="pipeView" hidden>
     <p class="sub">Tap a stage to filter. Use the arrows to move a lead up or down.</p>
-    <p class="savenote" id="saveNote" role="status"></p>
     <div class="stats" id="stats"></div>
     <div id="funnel"></div>
     <div class="bar"><h2 id="listTitle">All leads</h2><button class="link" id="toggleLost"></button></div>
     <div id="list"></div>
-    <div class="backup"><button class="link" id="backupBtn">Back up data</button><label class="link" for="restoreIn">Restore from backup</label><input type="file" id="restoreIn" accept=".json,application/json" hidden></div>
   </section>
 
+  <section id="clientsView" hidden></section>
+  <section id="acctView" hidden></section>
   <section id="statsView" hidden></section>
+
+  <div class="backup"><button class="link" id="backupBtn">Back up data</button><label class="link" for="restoreIn">Restore from backup</label><input type="file" id="restoreIn" accept=".json,application/json" hidden></div>
 </div>
-<button class="btn fab" id="addBtn">Add lead</button>
+<button class="btn fab" id="addBtn">Add task</button>
+
+<datalist id="acctList"></datalist><datalist id="mktList"></datalist><datalist id="regList"></datalist>
 
 <dialog id="dlg"><div class="sheet">
   <h3 id="dlgTitle">Add lead</h3>
   <label for="f-name">Name</label><input id="f-name" autocomplete="off">
-  <label for="f-company">Company</label><input id="f-company" autocomplete="off">
+  <label for="f-company">Company</label><input id="f-company" list="acctList" autocomplete="off">
+  <button class="link" id="openAcctBtn" hidden>Open client record</button>
+  <div id="mktRow" hidden><label for="f-market">Market for this new client</label><input id="f-market" list="mktList" placeholder="e.g. Healthcare" autocomplete="off"></div>
   <div class="row2">
     <div><label for="f-value">Deal value ($)</label><input id="f-value" type="number" inputmode="numeric" min="0"></div>
     <div><label for="f-stage">Stage</label><select id="f-stage"></select></div>
@@ -143,6 +194,16 @@ input,select,textarea{width:100%;font:inherit;padding:9px 10px;border:1px solid 
   </div>
 </div></dialog>
 
+<dialog id="fdlg"><div class="sheet">
+  <h3 id="fTitle"></h3>
+  <div id="fBody"></div>
+  <div class="actions">
+    <button class="btn" id="fSave">Save</button>
+    <span class="spacer"></span>
+    <button class="btn danger" id="fDel">Delete</button>
+    <button class="btn ghost" id="fCancel">Cancel</button>
+  </div>
+</div></dialog>
 <script>
 const STAGES=[
  {k:'cold',n:'Cold',p:.05,stale:30,d:'Fits your ideal client, no real conversation yet'},
@@ -151,23 +212,37 @@ const STAGES=[
  {k:'proposal',n:'Proposal',p:.70,stale:3,d:'Proposal or quote is in their hands'},
  {k:'won',n:'Won',p:1,stale:null,d:'Signed'}];
 const LOST={k:'lost',n:'Lost',d:'Went dark or said no'};
-const KEY='funnel-leads', SKEY='funnel-settings';
+const MARKETS=['Education','Healthcare','Finance','Fashion'];
+const STATUSES=[{k:'active',n:'Active client'},{k:'prospect',n:'Prospect'},{k:'paused',n:'Paused'},{k:'former',n:'Former client'}];
+const ACT_TYPES=['Call','Meeting','Email','Note'];
+const QUIET_DAYS=30;
 const $=s=>document.querySelector(s);
 const idx=k=>STAGES.findIndex(s=>s.k===k);
-const iso=d=>d.toISOString().slice(0,10);
+const iso=d=>new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);
 const today=()=>iso(new Date());
-const days=d=>d?Math.floor((Date.now()-new Date(d+'T12:00:00'))/864e5):null;
 const dd=(a,b)=>Math.round((new Date(b+'T12:00:00')-new Date(a+'T12:00:00'))/864e5);
+const days=d=>d?dd(d,today()):null;
 const money=n=>'$'+(n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e4?Math.round(n/1e3)+'k':n>=1e3?(n/1e3).toFixed(1)+'k':Math.round(n));
 const sum=a=>a.reduce((x,l)=>x+(+l.value||0),0);
 const pct=x=>x==null?'—':Math.round(x*100)+'%';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let leads=[],settings={goal:0},filter='all',showLost=false,editing=null,tab='pipe';
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const byName=(a,b)=>a.name.localeCompare(b.name);
+const fmtDate=d=>{const x=new Date(d+'T12:00:00'); return x.toLocaleDateString(undefined,x.getFullYear()===new Date().getFullYear()?{month:'short',day:'numeric'}:{month:'short',day:'numeric',year:'numeric'});};
+const when=d=>{const n=days(d); return n==null?'Never':n===0?'Today':n===1?'Yesterday':n>1?`${n} days ago`:fmtDate(d);};
+const dueText=d=>{const n=dd(today(),d); return n===0?'Due today':n===1?'Due tomorrow':n<0?`${-n} day${n===-1?'':'s'} overdue`:`Due ${fmtDate(d)}`;};
+function bindOpen(el,fn){ el.onclick=fn; el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fn();}}; }
+
+let leads=[],accounts=[],contacts=[],acts=[],tasks=[],settings={goal:0};
+let filter='all',showLost=false,editing=null,tab='today',openAcct=null;
+let mktFilter='all',statusFilter='all',query='',showAllTasks=false,showAllTl=false;
 
 // Cloud sync: data lives in Netlify Blobs behind /api/leads.
 const API='/api/leads';
-let rev=0, saving=Promise.resolve();
-function cacheLocal(){ try{ localStorage.setItem('funnel-cache',JSON.stringify({leads,settings,rev})); }catch(e){} }
+let rev=0, saving=Promise.resolve(), serverOld=false;
+const snapshot=()=>({leads,settings,accounts,contacts,activities:acts,tasks,rev});
+function readCache(){ try{ return JSON.parse(localStorage.getItem('funnel-cache')||'null'); }catch(e){ return null; } }
+function cacheLocal(){ try{ localStorage.setItem('funnel-cache',JSON.stringify(snapshot())); }catch(e){} }
 async function api(method,body){
   const r=await fetch(API,{method,headers:{'content-type':'application/json'},body:body?JSON.stringify(body):undefined});
   const d=await r.json().catch(()=>({}));
@@ -175,25 +250,30 @@ async function api(method,body){
   if(!r.ok) throw new Error(d.error||'Server error');
   return d;
 }
-function apply(d){
+function apply(d,fromServer){
   leads=d.leads||[]; settings=d.settings||{goal:0}; rev=d.rev||0;
+  let src=d;
+  if(fromServer){ serverOld=!Array.isArray(d.accounts); if(serverOld) src=readCache()||{}; }
+  accounts=src.accounts||[]; contacts=src.contacts||[]; acts=src.activities||[]; tasks=src.tasks||[];
   leads.forEach(l=>{ if(!l.hist) l.hist=[{s:l.stage,d:l.created||today()}]; });
-  cacheLocal(); render();
+  const changed=linkAccounts();
+  cacheLocal(); render(); return changed;
 }
 function showSave(state){
   const el=$('#saveNote'); if(!el) return;
   const msg={ok:'Saved. Syncs across all your devices.',
     fail:"Couldn't reach the server. Your change is kept on this device and will sync with your next change.",
     offline:"Can't reach the server right now. Showing the last copy saved on this device.",
+    old:"Leads are syncing, but clients, contacts, activity, and tasks are only saved on this device until the updated leads.mjs is on GitHub.",
     conflict:'This was just changed on another device, so the latest version was loaded. Redo your last change if it is missing.'}[state];
   el.textContent=msg; el.className='savenote'+(state==='ok'?'':' bad');
 }
-async function pull(){ apply(await api('GET')); showSave('ok'); }
+async function pull(){ const ch=apply(await api('GET'),true); showSave(serverOld?'old':'ok'); if(ch) save(); }
 async function push(){
   try{
-    const d=await api('PUT',{leads,settings,rev});
-    if(d.conflict){ apply(d); showSave('conflict'); return; }
-    rev=d.rev; cacheLocal(); showSave('ok');
+    const d=await api('PUT',snapshot());
+    if(d.conflict){ apply(d,true); showSave('conflict'); return; }
+    rev=d.rev; serverOld=!Array.isArray(d.accounts); cacheLocal(); showSave(serverOld?'old':'ok');
   }catch(e){ cacheLocal(); showSave('fail'); }
 }
 const save=()=>(saving=saving.then(push));
@@ -201,42 +281,355 @@ const saveSettings=save;
 async function load(){
   try{ await pull(); }
   catch(e){
-    try{ const c=JSON.parse(localStorage.getItem('funnel-cache')||'null'); if(c) apply(c); }catch(_){}
+    const c=readCache(); if(c) apply(c,false);
     showSave('offline'); render();
   }
 }
 document.addEventListener('visibilitychange',()=>{
-  if(!document.hidden&&!$('#dlg').open) saving.then(()=>pull()).catch(()=>{});
+  if(!document.hidden&&!document.querySelector('dialog[open]')) saving.then(()=>pull()).catch(()=>{});
 });
 function backup(){
-  const blob=new Blob([JSON.stringify({leads,settings,exported:today()},null,1)],{type:'application/json'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`lead-funnel-backup-${today()}.json`;
+  const blob=new Blob([JSON.stringify({leads,settings,accounts,contacts,activities:acts,tasks,exported:today()},null,1)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`clients-pipeline-backup-${today()}.json`;
   document.body.appendChild(a); a.click(); a.remove();
 }
 function restore(file){
   const r=new FileReader();
   r.onload=()=>{ try{ const d=JSON.parse(r.result); if(!Array.isArray(d.leads)) throw 0;
-      if(leads.length&&!confirm(`Replace your ${leads.length} current leads with ${d.leads.length} from the backup?`)) return;
-      leads=d.leads; settings=d.settings||settings; save(); saveSettings(); render();
-    }catch(e){ alert("That file isn't a lead funnel backup. Choose a .json file made with Back up data."); } };
+      if((leads.length||accounts.length)&&!confirm(`Replace everything here with the backup? It has ${d.leads.length} leads${d.accounts?` and ${d.accounts.length} clients`:''}.`)) return;
+      leads=d.leads; settings=d.settings||settings;
+      accounts=d.accounts||[]; contacts=d.contacts||[]; acts=d.activities||[]; tasks=d.tasks||[];
+      linkAccounts(); save(); render();
+    }catch(e){ alert("That file isn't a backup from this app. Choose a .json file made with Back up data."); } };
   r.readAsText(file);
 }
+
+// Clients
+const findAcct=name=>{const n=name.trim().toLowerCase(); return accounts.find(a=>a.name.trim().toLowerCase()===n);};
+function ensureAcct(name,market){
+  let a=findAcct(name);
+  if(!a){ a={id:uid(),name:name.trim(),market:market||'',region:'',status:'prospect',website:'',notes:'',created:today()}; accounts.push(a); }
+  return a;
+}
+function linkAccounts(){
+  let ch=false;
+  leads.forEach(l=>{
+    if(l.accountId&&accounts.some(a=>a.id===l.accountId)) return;
+    if(l.company&&l.company.trim()){ const a=ensureAcct(l.company); l.accountId=a.id; l.company=a.name; if(l.stage==='won'&&a.status==='prospect') a.status='active'; ch=true; }
+    else if(l.accountId){ l.accountId=''; ch=true; }
+  });
+  return ch;
+}
+const acctOf=l=>accounts.find(a=>a.id===l.accountId);
+const dealsOf=a=>leads.filter(l=>l.accountId===a.id);
+const isOpen=l=>idx(l.stage)>=0&&l.stage!=='won';
+const marketOf=l=>acctOf(l)?.market||'Unassigned';
+function lastTouch(a){
+  let m=''; const t=today();
+  acts.forEach(x=>{ if(x.accountId===a.id&&x.date&&x.date<=t&&x.date>m) m=x.date; });
+  dealsOf(a).forEach(l=>{ if(l.last&&l.last<=t&&l.last>m) m=l.last; });
+  return m||null;
+}
+const statusOf=a=>STATUSES.find(s=>s.k===a.status)||STATUSES[1];
+function markWon(l){ const a=acctOf(l); if(a&&l.stage==='won'&&a.status==='prospect') a.status='active'; }
+
 function track(l){ l.hist=l.hist||[]; const last=l.hist[l.hist.length-1]; if(!last||last.s!==l.stage) l.hist.push({s:l.stage,d:today()}); }
 function wonDate(l){ const h=(l.hist||[]).filter(x=>x.s==='won'); return h.length?h[h.length-1].d:(l.last||l.created||today()); }
 function staleDays(l){ const s=STAGES[idx(l.stage)]; if(!s||!s.stale) return 0; const d=days(l.last); return d!==null&&d>s.stale?d:0; }
-const openLeads=()=>leads.filter(l=>idx(l.stage)>=0&&l.stage!=='won');
+const openLeads=()=>leads.filter(isOpen);
 const weighted=a=>a.reduce((x,l)=>x+(+l.value||0)*STAGES[idx(l.stage)].p,0);
 
+// Tabs and routing
+const VIEWS={today:'#todayView',pipe:'#pipeView',clients:'#clientsView',stats:'#statsView'};
 function setTab(t){
-  tab=t;
-  $('#tabPipe').classList.toggle('on',t==='pipe'); $('#tabPipe').setAttribute('aria-selected',t==='pipe');
-  $('#tabStats').classList.toggle('on',t==='stats'); $('#tabStats').setAttribute('aria-selected',t==='stats');
-  $('#pipeView').hidden=t!=='pipe'; $('#statsView').hidden=t!=='stats'; $('#addBtn').hidden=t!=='pipe';
-  render();
+  tab=t; openAcct=null;
+  document.querySelectorAll('.tab').forEach(b=>{const on=b.dataset.tab===t; b.classList.toggle('on',on); b.setAttribute('aria-selected',on);});
+  render(); window.scrollTo(0,0);
 }
-$('#tabPipe').onclick=()=>setTab('pipe');
-$('#tabStats').onclick=()=>setTab('stats');
-function render(){ tab==='pipe'?renderPipeline():renderStats(); }
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+function openAccount(id){ setTab('clients'); openAcct=id; showAllTl=false; render(); window.scrollTo(0,0); }
+function refreshLists(){
+  $('#acctList').innerHTML=accounts.slice().sort(byName).map(a=>`<option value="${esc(a.name)}">`).join('');
+  $('#mktList').innerHTML=[...new Set([...MARKETS,...accounts.map(a=>a.market).filter(Boolean)])].map(m=>`<option value="${esc(m)}">`).join('');
+  $('#regList').innerHTML=[...new Set(accounts.map(a=>a.region).filter(Boolean))].map(m=>`<option value="${esc(m)}">`).join('');
+}
+function render(){
+  if(openAcct&&!accounts.some(a=>a.id===openAcct)) openAcct=null;
+  const inAcct=tab==='clients'&&!!openAcct;
+  Object.entries(VIEWS).forEach(([k,s])=>{ $(s).hidden=!(k===tab&&!inAcct); });
+  $('#acctView').hidden=!inAcct;
+  const fab=inAcct?'':{today:'Add task',pipe:'Add lead',clients:'Add client',stats:''}[tab];
+  $('#addBtn').hidden=!fab; $('#addBtn').textContent=fab;
+  refreshLists();
+  if(inAcct) renderAcct();
+  else ({today:renderToday,pipe:renderPipeline,clients:renderClients,stats:renderStats})[tab]();
+}
+$('#addBtn').onclick=()=>{ if(tab==='today') editTask(null); else if(tab==='pipe') openEditor(null); else if(tab==='clients') editAcct(null); };
+
+// Shared rows
+function section(parent,title,rows,empty,hint){
+  const h=document.createElement('h2'); h.className='sec'; h.textContent=title; parent.appendChild(h);
+  if(hint){ const p=document.createElement('p'); p.className='hint'; p.textContent=hint; parent.appendChild(p); }
+  if(!rows.length){ const p=document.createElement('p'); p.className='hint'; p.textContent=empty; parent.appendChild(p); }
+  else rows.forEach(r=>parent.appendChild(r));
+}
+function taskRow(t,showClient){
+  const r=document.createElement('div'); r.className='row';
+  const late=!t.done&&t.due&&t.due<today(), a=accounts.find(z=>z.id===t.accountId);
+  r.innerHTML=`<button class="check${t.done?' done':''}" aria-label="${t.done?'Mark not done':'Mark done'}: ${esc(t.title)}">${t.done?'✓':''}</button>
+    <div class="main" tabindex="0" role="button"><div class="nm${t.done?' struck':''}">${esc(t.title)}</div>
+    <div class="co">${showClient&&a?esc(a.name)+' / ':''}<span class="due${late?' late':''}">${t.due?dueText(t.due):'No due date'}</span></div></div>`;
+  r.querySelector('.check').onclick=()=>{ t.done=!t.done; t.doneOn=t.done?today():''; save(); render(); };
+  bindOpen(r.querySelector('.main'),()=>editTask(t));
+  return r;
+}
+function leadMini(l,showCompany){
+  const r=document.createElement('div'); r.className='row';
+  const s=STAGES[idx(l.stage)]||LOST, sd=staleDays(l);
+  const bits=[showCompany&&l.company?esc(l.company):'',s.n,l.stage==='lost'&&l.reason?esc(l.reason):l.next&&isOpen(l)?'Next: '+esc(l.next):''].filter(Boolean);
+  r.innerHTML=`<span class="dot" style="--c:var(--${s.k})"></span>
+    <div class="main" tabindex="0" role="button"><div class="nm">${esc(l.name)}</div><div class="co">${bits.join(' / ')}</div>
+    ${sd?`<span class="chip">No contact in ${sd} days</span>`:''}</div>
+    <div class="money">${l.value?money(+l.value):''}</div>`;
+  bindOpen(r.querySelector('.main'),()=>openEditor(l));
+  return r;
+}
+function acctRow(a){
+  const r=document.createElement('div'); r.className='row';
+  const lt=lastTouch(a), open=dealsOf(a).filter(isOpen), st=statusOf(a);
+  const quiet=a.status==='active'&&(!lt||days(lt)>QUIET_DAYS);
+  r.innerHTML=`<div class="main" tabindex="0" role="button"><div class="nm">${esc(a.name)}</div>
+    <div class="co">${[a.market,a.region].filter(Boolean).map(esc).join(' / ')||'No market set'}</div>
+    <div class="meta"><span class="pill ${st.k}">${st.n}</span><span class="due${quiet?' late':''}">${lt?'Last contact '+when(lt).toLowerCase():'No contact logged'}</span></div></div>
+    <div class="money">${open.length?money(sum(open)):''}</div>`;
+  bindOpen(r.querySelector('.main'),()=>openAccount(a.id));
+  return r;
+}
+function contactRow(c){
+  const r=document.createElement('div'); r.className='row';
+  const tel=(c.phone||'').replace(/[^\d+]/g,'');
+  r.innerHTML=`<div class="main" tabindex="0" role="button"><div class="nm">${esc(c.name)}</div>
+    ${c.role?`<div class="co">${esc(c.role)}</div>`:''}${c.email&&!c.role?`<div class="co">${esc(c.email)}</div>`:''}
+    ${c.notes?`<div class="co">${esc(c.notes)}</div>`:''}</div>
+    <div class="links">${tel?`<a class="btn ghost sm" href="tel:${esc(tel)}">Call</a>`:''}${c.email?`<a class="btn ghost sm" href="mailto:${esc(c.email)}">Email</a>`:''}</div>`;
+  bindOpen(r.querySelector('.main'),()=>editContact(c));
+  return r;
+}
+
+// Today
+function renderToday(){
+  const v=$('#todayView'), t0=today();
+  const open=tasks.filter(t=>!t.done);
+  const overdue=open.filter(t=>t.due&&t.due<t0), dueToday=open.filter(t=>t.due===t0);
+  const week=open.filter(t=>!t.due||t.due>=t0&&dd(t0,t.due)<=7);
+  const later=open.filter(t=>t.due&&dd(t0,t.due)>7);
+  const stale=openLeads().filter(staleDays).sort((a,b)=>staleDays(b)-staleDays(a));
+  const quiet=accounts.filter(a=>a.status==='active').map(a=>({a,d:lastTouch(a)}))
+    .filter(x=>!x.d||days(x.d)>QUIET_DAYS).sort((x,y)=>(x.d||'').localeCompare(y.d||''));
+  v.innerHTML=`<div class="stats">
+    <div class="stat ${overdue.length?'alert':''}"><b>${overdue.length}</b><span>Overdue tasks</span></div>
+    <div class="stat"><b>${dueToday.length}</b><span>Due today</span></div>
+    <div class="stat ${stale.length?'alert':''}"><b>${stale.length}</b><span>Leads to follow up</span></div></div>`;
+  if(!tasks.length&&!leads.length&&!accounts.length){
+    v.innerHTML+=`<div class="empty"><p>Nothing here yet. Add a task, a lead, or a client, or load example data to see how it all fits together.</p><button class="btn ghost" id="sample2">Load example data</button></div>`;
+    $('#sample2').onclick=loadSamples; return;
+  }
+  const shown=(showAllTasks?[...overdue,...week,...later]:[...overdue,...week]).sort((a,b)=>(a.due||'9').localeCompare(b.due||'9'));
+  section(v,'Tasks',shown.map(t=>taskRow(t,true)),later.length?'Nothing due in the next 7 days.':'No open tasks. Add one with the button below.');
+  if(later.length){ const b=document.createElement('button'); b.className='link'; b.textContent=showAllTasks?'Show only the next 7 days':`Show ${later.length} later task${later.length>1?'s':''}`; b.onclick=()=>{showAllTasks=!showAllTasks;render();}; v.appendChild(b); }
+  section(v,'Leads to follow up',stale.map(l=>leadMini(l,true)),'Every open lead has been contacted recently.');
+  section(v,'Clients gone quiet',quiet.map(x=>acctRow(x.a)),`You've been in touch with every active client in the last ${QUIET_DAYS} days.`,quiet.length?`Active clients with no logged contact in ${QUIET_DAYS}+ days.`:'');
+}
+
+// Clients list
+function renderClients(){
+  const v=$('#clientsView');
+  if(!accounts.length){
+    v.innerHTML=`<div class="empty"><p>No clients yet. Add one, or add a lead with a company name and the company shows up here automatically.</p></div>`; return;
+  }
+  const mkts=[...new Set(accounts.map(a=>a.market||'Unassigned'))].sort((a,b)=>a==='Unassigned'?1:b==='Unassigned'?-1:a.localeCompare(b));
+  if(mktFilter!=='all'&&!mkts.includes(mktFilter)) mktFilter='all';
+  v.innerHTML=`<input class="search" id="q" type="search" placeholder="Search clients, contacts, and notes" aria-label="Search clients" value="${esc(query)}">
+    <div class="chips" id="mchips" aria-label="Filter by market"></div>
+    <div class="chips" id="schips" aria-label="Filter by status"></div>
+    <div id="msum"></div><div id="alist"></div>`;
+  const chip=(label,on,count,fn)=>{ const b=document.createElement('button'); b.className='fchip'+(on?' on':''); b.setAttribute('aria-pressed',on); b.innerHTML=esc(label)+(count!=null?`<small>${count}</small>`:''); b.onclick=fn; return b; };
+  const mc=$('#mchips');
+  mc.appendChild(chip('All markets',mktFilter==='all',null,()=>{mktFilter='all';renderClients();}));
+  mkts.forEach(m=>mc.appendChild(chip(m,mktFilter===m,accounts.filter(a=>(a.market||'Unassigned')===m).length,()=>{mktFilter=mktFilter===m?'all':m;renderClients();})));
+  const sc=$('#schips');
+  [{k:'all',n:'All'},...STATUSES].forEach(s=>sc.appendChild(chip(s.k==='all'?'Any status':s.n,statusFilter===s.k,null,()=>{statusFilter=s.k;renderClients();})));
+  if(mktFilter!=='all'){
+    const inM=accounts.filter(a=>(a.market||'Unassigned')===mktFilter), ids=new Set(inM.map(a=>a.id));
+    const ml=leads.filter(l=>ids.has(l.accountId)), act=inM.filter(a=>a.status==='active').length;
+    $('#msum').innerHTML=`<p class="mkt" style="border-left-color:var(--ink)"><b>${esc(mktFilter)}:</b> ${act} active client${act===1?'':'s'}, ${money(sum(ml.filter(isOpen)))} open pipeline, ${money(sum(ml.filter(l=>l.stage==='won')))} won</p>`;
+  }
+  [mc,sc].forEach(c=>{const on=c.querySelector('.on'); if(on) c.scrollLeft=Math.max(0,on.offsetLeft-c.offsetLeft-16);});
+  $('#q').oninput=e=>{query=e.target.value;renderClientList();};
+  renderClientList();
+}
+function renderClientList(){
+  const q=query.trim().toLowerCase(), order=STATUSES.map(s=>s.k);
+  const hit=a=>!q||[a.name,a.market,a.region,a.notes,a.website,
+    ...contacts.filter(c=>c.accountId===a.id).flatMap(c=>[c.name,c.role,c.email,c.notes]),
+    ...acts.filter(x=>x.accountId===a.id).map(x=>x.note),
+    ...dealsOf(a).flatMap(l=>[l.name,l.notes,l.next])].some(t=>(t||'').toLowerCase().includes(q));
+  const list=accounts.filter(a=>(mktFilter==='all'||(a.market||'Unassigned')===mktFilter)&&(statusFilter==='all'||a.status===statusFilter)&&hit(a))
+    .sort((a,b)=>order.indexOf(a.status)-order.indexOf(b.status)||byName(a,b));
+  const el=$('#alist'); el.innerHTML='';
+  if(!list.length){ el.innerHTML=`<div class="empty">${q?`No clients match "${esc(query.trim())}".`:'No clients match these filters.'}</div>`; return; }
+  list.forEach(a=>el.appendChild(acctRow(a)));
+}
+
+// One client
+function renderAcct(){
+  const a=accounts.find(x=>x.id===openAcct), v=$('#acctView'), st=statusOf(a), t0=today();
+  const deals=dealsOf(a), open=deals.filter(isOpen), won=deals.filter(l=>l.stage==='won'), lt=lastTouch(a);
+  const quiet=a.status==='active'&&(!lt||days(lt)>QUIET_DAYS);
+  const cs=contacts.filter(c=>c.accountId===a.id).sort(byName);
+  const ts=tasks.filter(t=>t.accountId===a.id&&!t.done).sort((x,y)=>(x.due||'9').localeCompare(y.due||'9'));
+  const site=a.website?(/^https?:\/\//i.test(a.website)?a.website:'https://'+a.website):'';
+  v.innerHTML=`<button class="link back" id="backBtn">‹ All clients</button>
+    <h2 class="aname">${esc(a.name)}</h2>
+    <p class="co" style="margin:0">${[a.market,a.region].filter(Boolean).map(esc).join(' / ')||'No market set'}&nbsp; <span class="pill ${st.k}">${st.n}</span></p>
+    ${site?`<p class="co" style="margin:4px 0 0"><a href="${esc(site)}" target="_blank" rel="noopener">${esc(a.website)}</a></p>`:''}
+    <div class="acts"><button class="btn" id="aLog">Log activity</button><button class="btn ghost" id="aTask">Add task</button><button class="btn ghost" id="aDeal">Add deal</button><button class="btn ghost" id="aContact">Add contact</button><button class="btn ghost" id="aEdit">Edit client</button></div>
+    <div class="stats"><div class="stat"><b>${money(sum(open))}</b><span>Open pipeline</span></div>
+      <div class="stat"><b>${money(sum(won))}</b><span>Won to date</span></div>
+      <div class="stat ${quiet?'alert':''}"><b>${lt?when(lt):'None yet'}</b><span>Last contact</span></div></div>
+    ${a.notes?`<div class="panel"><p class="notes">${esc(a.notes)}</p></div>`:''}
+    <div id="aBody"></div>`;
+  const b=$('#aBody');
+  section(b,'Open tasks',ts.map(t=>taskRow(t,false)),'No open tasks.');
+  const so=l=>l.stage==='lost'?9:l.stage==='won'?8:-idx(l.stage);
+  section(b,'Deals',deals.slice().sort((x,y)=>so(x)-so(y)).map(l=>leadMini(l,false)),'No deals yet.');
+  section(b,'Contacts',cs.map(contactRow),'No contacts yet.');
+  // Timeline
+  const ev=[];
+  acts.filter(x=>x.accountId===a.id).forEach(x=>ev.push({d:x.date,o:0,x}));
+  deals.forEach(l=>(l.hist||[]).forEach((h,i)=>ev.push({d:h.d,o:1,l,h,first:i===0})));
+  tasks.filter(t=>t.accountId===a.id&&t.done&&t.doneOn).forEach(t=>ev.push({d:t.doneOn,o:2,t}));
+  ev.sort((x,y)=>(y.d||'').localeCompare(x.d||'')||x.o-y.o);
+  const h=document.createElement('h2'); h.className='sec'; h.textContent='Activity'; b.appendChild(h);
+  if(!ev.length){ const p=document.createElement('p'); p.className='hint'; p.textContent='Nothing logged yet. Use Log activity after a call, meeting, or email.'; b.appendChild(p); }
+  else{
+    const tl=document.createElement('div'); tl.className='tl';
+    (showAllTl?ev:ev.slice(0,15)).forEach(e=>{
+      const d=document.createElement('div'); d.className='ev';
+      if(e.x){
+        const l=leads.find(z=>z.id===e.x.leadId);
+        d.style.setProperty('--c','var(--ink)'); d.tabIndex=0; d.setAttribute('role','button');
+        d.innerHTML=`<b>${esc(e.x.type)}</b>${l?' / '+esc(l.name):''}<span class="d">${e.d?fmtDate(e.d):''}</span>${e.x.note?`<p>${esc(e.x.note)}</p>`:''}`;
+        bindOpen(d,()=>logAct(e.x));
+      }else if(e.l){
+        const s=STAGES[idx(e.h.s)]||LOST;
+        d.style.setProperty('--c',`var(--${s.k})`);
+        d.innerHTML=`${e.first?'New deal: ':''}<b>${esc(e.l.name)}</b>${e.first?` (${s.n})`:` moved to ${s.n}`}<span class="d">${fmtDate(e.d)}</span>`;
+      }else{
+        d.style.setProperty('--c','var(--won)');
+        d.innerHTML=`Done: <b>${esc(e.t.title)}</b><span class="d">${fmtDate(e.d)}</span>`;
+      }
+      tl.appendChild(d);
+    });
+    b.appendChild(tl);
+    if(ev.length>15){ const m=document.createElement('button'); m.className='link'; m.textContent=showAllTl?'Show less':`Show ${ev.length-15} older`; m.onclick=()=>{showAllTl=!showAllTl;render();}; b.appendChild(m); }
+  }
+  $('#backBtn').onclick=()=>{openAcct=null;render();window.scrollTo(0,0);};
+  $('#aLog').onclick=()=>logAct(null,a.id);
+  $('#aTask').onclick=()=>editTask(null,a.id);
+  $('#aDeal').onclick=()=>openEditor(null,a);
+  $('#aContact').onclick=()=>editContact(null,a.id);
+  $('#aEdit').onclick=()=>editAcct(a);
+}
+
+// Generic form dialog
+let fcfg=null;
+function form(cfg){
+  fcfg=cfg; $('#fTitle').textContent=cfg.title; $('#fSave').textContent=cfg.saveLabel||'Save';
+  $('#fDel').hidden=!cfg.onDelete;
+  $('#fBody').innerHTML=cfg.fields.map(f=>{
+    const id='ff-'+f.id, v=f.value??'';
+    let c;
+    if(f.type==='select') c=`<select id="${id}">${f.options.map(o=>{const [val,lab]=Array.isArray(o)?o:[o,o]; return `<option value="${esc(val)}"${String(val)===String(v)?' selected':''}>${esc(lab)}</option>`;}).join('')}</select>`;
+    else if(f.type==='textarea') c=`<textarea id="${id}" rows="${f.rows||3}" placeholder="${esc(f.placeholder||'')}">${esc(v)}</textarea>`;
+    else c=`<input id="${id}" type="${f.type||'text'}" value="${esc(v)}" placeholder="${esc(f.placeholder||'')}"${f.list?` list="${f.list}"`:''}${f.type==='tel'?' inputmode="tel"':''} autocomplete="off">`;
+    return `<div${f.half?' class="half"':''}><label for="${id}">${esc(f.label)}</label>${c}</div>`;
+  }).join('');
+  $('#fdlg').showModal();
+  if(!cfg.noFocus){ const first=$('#fBody input,#fBody textarea'); if(first) first.focus(); }
+}
+const fval=id=>{const el=$('#ff-'+id); return el?el.value.trim():'';};
+function need(id,msg){ const el=$('#ff-'+id); if(el.value.trim()) return true; el.placeholder=msg; el.focus(); return false; }
+$('#fSave').onclick=()=>{ if(fcfg.onSave()!==false){ $('#fdlg').close(); save(); render(); } };
+$('#fDel').onclick=()=>{ if(fcfg.onDelete&&fcfg.onDelete()!==false){ $('#fdlg').close(); save(); render(); } };
+$('#fCancel').onclick=()=>$('#fdlg').close();
+
+function editAcct(a){
+  form({title:a?'Edit client':'Add client',saveLabel:a?'Save client':'Add client',fields:[
+    {id:'name',label:'Company name',value:a?.name},
+    {id:'market',label:'Market',value:a?.market,list:'mktList',placeholder:'e.g. Healthcare',half:1},
+    {id:'region',label:'Region',value:a?.region,list:'regList',placeholder:'e.g. Lynchburg',half:1},
+    {id:'status',label:'Status',type:'select',options:STATUSES.map(s=>[s.k,s.n]),value:a?.status||'prospect',half:1},
+    {id:'website',label:'Website',type:'url',value:a?.website,placeholder:'example.com',half:1},
+    {id:'notes',label:'Notes',type:'textarea',value:a?.notes,rows:4,placeholder:'Goals, services you provide, contract details'}],
+    onSave:()=>{
+      if(!need('name','Add a company name to save')) return false;
+      const name=fval('name'), dup=findAcct(name);
+      if(dup&&dup!==a){ alert(`${dup.name} is already in your clients.`); return false; }
+      const d={name,market:fval('market'),region:fval('region'),status:fval('status'),website:fval('website'),notes:fval('notes')};
+      if(a){ Object.assign(a,d); leads.forEach(l=>{ if(l.accountId===a.id) l.company=name; }); }
+      else{ const n={id:uid(),created:today(),...d}; accounts.push(n); openAcct=n.id; showAllTl=false; }
+    },
+    onDelete:a?()=>{
+      const n=dealsOf(a).length;
+      if(!confirm(`Delete ${a.name}? This also deletes its contacts, activity, and tasks${n?`, plus ${n} deal${n>1?'s':''}`:''}.`)) return false;
+      leads=leads.filter(l=>l.accountId!==a.id); contacts=contacts.filter(c=>c.accountId!==a.id);
+      acts=acts.filter(x=>x.accountId!==a.id); tasks=tasks.filter(t=>t.accountId!==a.id);
+      accounts=accounts.filter(x=>x!==a); openAcct=null;
+    }:null});
+}
+function editContact(c,acctId){
+  form({title:c?'Edit contact':'Add contact',saveLabel:'Save contact',fields:[
+    {id:'name',label:'Name',value:c?.name},
+    {id:'role',label:'Role',value:c?.role,placeholder:'e.g. Marketing director'},
+    {id:'email',label:'Email',type:'email',value:c?.email,half:1},
+    {id:'phone',label:'Phone',type:'tel',value:c?.phone,half:1},
+    {id:'notes',label:'Notes',type:'textarea',value:c?.notes,rows:2}],
+    onSave:()=>{
+      if(!need('name','Add a name to save')) return false;
+      const d={name:fval('name'),role:fval('role'),email:fval('email'),phone:fval('phone'),notes:fval('notes')};
+      if(c) Object.assign(c,d); else contacts.push({id:uid(),accountId:acctId,...d});
+    },
+    onDelete:c?()=>{ if(!confirm(`Delete ${c.name}?`)) return false; contacts=contacts.filter(x=>x!==c); }:null});
+}
+function logAct(x,acctId){
+  const a=accounts.find(z=>z.id===(x?x.accountId:acctId)); if(!a) return;
+  const deals=dealsOf(a).filter(l=>l.stage!=='lost'||l.id===x?.leadId);
+  form({title:x?'Edit activity':'Log activity',saveLabel:x?'Save':'Log activity',noFocus:!x,fields:[
+    {id:'type',label:'Type',type:'select',options:ACT_TYPES,value:x?.type||'Call',half:1},
+    {id:'date',label:'Date',type:'date',value:x?.date||today(),half:1},
+    ...(deals.length?[{id:'lead',label:'Related deal (optional)',type:'select',options:[['','None'],...deals.map(l=>[l.id,l.name+(l.value?` (${money(+l.value)})`:'')])],value:x?.leadId||''}]:[]),
+    {id:'note',label:'What happened?',type:'textarea',value:x?.note,rows:4,placeholder:'e.g. Talked Q1 budget; wants a proposal by the 15th'}],
+    onSave:()=>{
+      const d={type:fval('type'),date:fval('date')||today(),note:fval('note'),leadId:fval('lead')};
+      if(x) Object.assign(x,d); else acts.push({id:uid(),accountId:a.id,...d});
+      const l=leads.find(z=>z.id===d.leadId);
+      if(l&&d.type!=='Note'&&d.date<=today()&&(!l.last||d.date>l.last)) l.last=d.date;
+    },
+    onDelete:x?()=>{ if(!confirm('Delete this activity?')) return false; acts=acts.filter(z=>z!==x); }:null});
+}
+function editTask(t,acctId){
+  form({title:t?'Edit task':'Add task',saveLabel:t?'Save task':'Add task',fields:[
+    {id:'title',label:'Task',value:t?.title,placeholder:'e.g. Send Q1 proposal'},
+    {id:'due',label:'Due',type:'date',value:t?t.due:today(),half:1},
+    {id:'acct',label:'Client',type:'select',options:[['','None'],...accounts.slice().sort(byName).map(a=>[a.id,a.name])],value:t?t.accountId:(acctId||''),half:1}],
+    onSave:()=>{
+      if(!need('title','Add a task to save')) return false;
+      const d={title:fval('title'),due:fval('due'),accountId:fval('acct')};
+      if(t) Object.assign(t,d); else tasks.push({id:uid(),done:false,created:today(),...d});
+    },
+    onDelete:t?()=>{ tasks=tasks.filter(z=>z!==t); }:null});
+}
 
 function renderPipeline(){
   const open=openLeads(), stale=open.filter(staleDays).length;
@@ -344,6 +737,15 @@ function renderStats(){
     ${srows.map(([s,d])=>`<tr><td>${esc(s)}</td><td class="n">${d.n}</td><td class="n">${d.w+d.l?pct(d.w/(d.w+d.l)):'—'}</td><td class="n">${money(d.rev)}</td></tr>`).join('')}
     </tbody></table></div>`;
 
+  // Markets
+  const mk={}; leads.forEach(l=>{const m=marketOf(l), o=(mk[m]=mk[m]||{open:0,won:0,w:0,l:0,c:new Set()}); if(l.stage==='won'){o.won+=+l.value||0;o.w++;} else if(l.stage==='lost') o.l++; else o.open+=+l.value||0;});
+  accounts.forEach(a=>{const m=a.market||'Unassigned'; const o=(mk[m]=mk[m]||{open:0,won:0,w:0,l:0,c:new Set()}); if(a.status==='active') o.c.add(a.id);});
+  const mrows=Object.entries(mk).sort((a,b)=>b[1].won-a[1].won||b[1].open-a[1].open);
+  h+=`<div class="panel"><h3>Markets</h3><p class="q">Which industries bring in the most business? Clients counts active clients only.</p>
+    <table><thead><tr><th>Market</th><th class="n">Clients</th><th class="n">Open</th><th class="n">Won</th><th class="n">Win rate</th></tr></thead><tbody>
+    ${mrows.map(([m,d])=>`<tr><td>${esc(m)}</td><td class="n">${d.c.size}</td><td class="n">${money(d.open)}</td><td class="n">${money(d.won)}</td><td class="n">${d.w+d.l?pct(d.w/(d.w+d.l)):'—'}</td></tr>`).join('')}
+    </tbody></table></div>`;
+
   // Time in stage
   const dur={}; leads.forEach(l=>{const hs=l.hist||[]; for(let i=0;i<hs.length-1;i++){(dur[hs[i].s]=dur[hs[i].s]||[]).push(Math.max(dd(hs[i].d,hs[i+1].d),0));}});
   const trows=STAGES.slice(0,4).map(s=>{const a=dur[s.k]||[]; return {label:s.n,value:a.length?a.reduce((x,y)=>x+y,0)/a.length:0,color:`var(--${s.k})`,has:a.length};});
@@ -371,38 +773,51 @@ function renderStats(){
   $('#goal').onchange=e=>{settings.goal=+e.target.value||0; saveSettings(); renderStats();};
 }
 
+
 function move(l,dir){
   const i=idx(l.stage)+dir; if(i<0||i>=STAGES.length) return;
-  l.stage=STAGES[i].k; l.max=Math.max(l.max??0,i); l.last=today(); track(l);
+  l.stage=STAGES[i].k; l.max=Math.max(l.max??0,i); l.last=today(); track(l); markWon(l);
   save(); render();
 }
 
 const stageSel=$('#f-stage');
 stageSel.innerHTML=[...STAGES,LOST].map(s=>`<option value="${s.k}">${s.n}</option>`).join('');
 stageSel.onchange=()=>{$('#reasonRow').hidden=stageSel.value!=='lost';};
-function openEditor(l){
+function syncCompany(){
+  const v=$('#f-company').value.trim(), a=v?findAcct(v):null;
+  $('#mktRow').hidden=!v||!!a;
+  $('#openAcctBtn').hidden=!(a&&editing&&editing.accountId===a.id);
+}
+$('#f-company').oninput=syncCompany;
+$('#openAcctBtn').onclick=()=>{ const id=editing&&editing.accountId; $('#dlg').close(); if(id) openAccount(id); };
+function openEditor(l,acct){
   editing=l||null;
-  $('#dlgTitle').textContent=l?'Edit lead':'Add lead';
+  $('#dlgTitle').textContent=l?'Edit lead':acct?`New deal for ${acct.name}`:'Add lead';
   $('#delBtn').style.display=l?'':'none';
-  $('#f-name').value=l?.name||''; $('#f-company').value=l?.company||'';
+  $('#f-name').value=l?.name||''; $('#f-company').value=l?.company||acct?.name||''; $('#f-market').value='';
   $('#f-value').value=l?.value||''; stageSel.value=l?.stage||'cold';
   $('#f-reason').value=l?.reason||''; $('#reasonRow').hidden=stageSel.value!=='lost';
-  $('#f-source').value=l?.source||'Referral'; $('#f-last').value=l?.last||today();
+  $('#f-source').value=l?.source||(acct&&acct.status==='active'?'Existing client':'Referral'); $('#f-last').value=l?.last||today();
   $('#f-next').value=l?.next||''; $('#f-notes').value=l?.notes||'';
-  $('#dlg').showModal(); $('#f-name').focus();
+  $('#f-name').placeholder=acct?'Contact or project name':'';
+  syncCompany();
+  $('#dlg').showModal(); if(!l) $('#f-name').focus();
 }
 function commit(){
   const name=$('#f-name').value.trim();
   if(!name){ $('#f-name').focus(); $('#f-name').placeholder='Add a name to save this lead'; return; }
-  const d={name,company:$('#f-company').value.trim(),value:+$('#f-value').value||0,stage:stageSel.value,
+  const cname=$('#f-company').value.trim();
+  const acct=cname?ensureAcct(cname,$('#f-market').value.trim()):null;
+  const d={name,company:acct?acct.name:'',accountId:acct?acct.id:'',value:+$('#f-value').value||0,stage:stageSel.value,
     reason:stageSel.value==='lost'?$('#f-reason').value:'',
     source:$('#f-source').value,last:$('#f-last').value,next:$('#f-next').value.trim(),notes:$('#f-notes').value.trim()};
   const si=idx(d.stage);
-  if(editing){ Object.assign(editing,d); if(si>=0) editing.max=Math.max(editing.max??0,si); track(editing); }
-  else leads.push({id:Date.now().toString(36),created:today(),max:Math.max(si,0),hist:[{s:d.stage,d:today()}],...d});
+  let l=editing;
+  if(l){ Object.assign(l,d); if(si>=0) l.max=Math.max(l.max??0,si); track(l); }
+  else{ l={id:uid(),created:today(),max:Math.max(si,0),hist:[{s:d.stage,d:today()}],...d}; leads.push(l); }
+  markWon(l);
   save(); $('#dlg').close(); render();
 }
-$('#addBtn').onclick=()=>openEditor(null);
 $('#saveBtn').onclick=commit;
 $('#cancelBtn').onclick=()=>$('#dlg').close();
 $('#touchBtn').onclick=()=>{$('#f-last').value=today();};
@@ -410,7 +825,7 @@ $('#delBtn').onclick=()=>{ if(editing&&confirm(`Delete ${editing.name}?`)){ lead
 $('#toggleLost').onclick=()=>{showLost=!showLost;render();};
 
 function loadSamples(){
-  const ago=n=>iso(new Date(Date.now()-n*864e5));
+  const ago=n=>iso(new Date(Date.now()-n*864e5)), ahead=n=>ago(-n);
   const S=[
    ['Dana Whitfield','Blue Ridge Credit Union',18000,'cold',0,'Cold outreach',40,40,'Connect on LinkedIn',''],
    ['Marcus Hale','Hale Orthodontics',9000,'cold',0,'Event',6,6,'Send intro email',''],
@@ -421,18 +836,42 @@ function loadSamples(){
    ['Nate Burke','Burke Financial',20000,'hot',2,'Event',28,9,'Confirm budget',''],
    ['Tom Reyes','Reyes Wealth Partners',30000,'proposal',3,'Existing client',25,6,'Follow up on proposal',''],
    ['Amy Shaw','Lakeside Dental',12000,'won',4,'Inbound',50,10,'Kickoff meeting',''],
-   ['Kara Mills','Mills Academy',26000,'won',4,'Referral',70,35,'Monthly report',''],
+   ['Kara Mills','Mills Academy',26000,'won',4,'Referral',70,45,'Monthly report',''],
    ['Raj Patel','Patel Insurance',16000,'won',4,'Referral',45,15,'',''],
    ['Ben Ortiz','Ortiz Realty',8000,'lost',2,'Cold outreach',60,45,'','Price'],
    ['Sue Lin','Lin Apparel',11000,'lost',1,'LinkedIn',55,30,'','No response'],
    ['Greg Moss','Moss Clinic',22000,'lost',3,'Cold outreach',48,20,'','Went with competitor']];
+  const M={'Blue Ridge Credit Union':['Finance','Lynchburg','Marketing director'],'Hale Orthodontics':['Healthcare','Forest','Owner'],
+    'Forest Family Medicine':['Healthcare','Forest','Practice manager'],'Summit Prep Academy':['Education','Roanoke','Head of admissions'],
+    'Grant & Co. Boutique':['Fashion','Charlottesville','Owner'],'Piedmont Health':['Healthcare','Charlottesville','VP of marketing'],
+    'Burke Financial':['Finance','Lynchburg','Managing partner'],'Reyes Wealth Partners':['Finance','Richmond','Founder'],
+    'Lakeside Dental':['Healthcare','Smith Mountain Lake','Office manager'],'Mills Academy':['Education','Lynchburg','Director of communications'],
+    'Patel Insurance':['Finance','Roanoke','Owner'],'Ortiz Realty':['Real estate','Lynchburg','Broker'],
+    'Lin Apparel':['Fashion','Richmond','Brand manager'],'Moss Clinic':['Healthcare','Roanoke','Administrator']};
+  accounts=[]; contacts=[]; acts=[]; tasks=[];
   leads=S.map((r,i)=>{
     const [name,company,value,stage,max,source,cAgo,lAgo,next,reason]=r;
     const steps=STAGES.slice(0,max+1).map(s=>s.k).concat(stage==='lost'?['lost']:[]);
     const gap=steps.length>1?(cAgo-lAgo)/(steps.length-1):0;
-    return {id:'s'+i,name,company,value,stage,max,source,next,reason,notes:'',
+    const [market,region,role]=M[company], a=ensureAcct(company,market);
+    a.region=region; a.status=stage==='won'?'active':stage==='lost'?'former':'prospect'; a.created=ago(cAgo);
+    contacts.push({id:'c'+i,accountId:a.id,name,role,email:name.split(' ')[0].toLowerCase()+'@example.com',phone:'',notes:''});
+    return {id:'s'+i,name,company,accountId:a.id,value,stage,max,source,next,reason,notes:'',
       created:ago(cAgo),last:ago(lAgo),hist:steps.map((s,j)=>({s,d:ago(Math.round(cAgo-j*gap))}))};
   });
+  const A=n=>findAcct(n).id;
+  findAcct('Lakeside Dental').notes='Monthly retainer: social and paid search. Renewal in March.';
+  acts=[
+    {id:'a1',accountId:A('Piedmont Health'),leadId:'s5',type:'Meeting',date:ago(2),note:'Scope call. They want a patient-acquisition campaign for two new clinics.'},
+    {id:'a2',accountId:A('Reyes Wealth Partners'),leadId:'s7',type:'Email',date:ago(6),note:'Sent the proposal and the finance case study.'},
+    {id:'a3',accountId:A('Lakeside Dental'),leadId:'',type:'Call',date:ago(10),note:'Monthly check-in. Happy with results; asked about short-form video.'},
+    {id:'a4',accountId:A('Patel Insurance'),leadId:'',type:'Meeting',date:ago(15),note:'Quarterly review. Leads up month over month.'}];
+  tasks=[
+    {id:'t1',accountId:A('Reyes Wealth Partners'),title:'Follow up on proposal',due:ago(1),done:false,created:ago(6)},
+    {id:'t2',accountId:A('Piedmont Health'),title:'Send scope document',due:today(),done:false,created:ago(2)},
+    {id:'t3',accountId:A('Mills Academy'),title:'Check in on spring enrollment campaign',due:ahead(2),done:false,created:ago(3)},
+    {id:'t4',accountId:A('Lakeside Dental'),title:'Pitch a short-form video add-on',due:ahead(5),done:false,created:ago(10)},
+    {id:'t5',accountId:A('Patel Insurance'),title:'Send quarterly report',due:ago(14),done:true,doneOn:ago(14),created:ago(20)}];
   save(); render();
 }
 $('#backupBtn').onclick=backup;
